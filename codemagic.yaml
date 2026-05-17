@@ -6,8 +6,6 @@ workflows:
 
     environment:
       java: 17
-      android_signing:
-        - DeltaGames_keystore
       groups:
         - delta_games_env        # Contains RAWG_API_KEY
 
@@ -59,7 +57,7 @@ workflows:
     publishing:
       email:
         recipients:
-          - deltarfd@gmail.com
+          - deltarfd@live.com
         notify:
           success: true
           failure: true
