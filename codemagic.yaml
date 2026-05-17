@@ -1,0 +1,65 @@
+workflows:
+  android-workflow:
+    name: DeltaGames Android CI
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+
+    environment:
+      java: 17
+      android_signing:
+        - DeltaGames_keystore
+      groups:
+        - delta_games_env        # Contains RAWG_API_KEY
+
+    triggering:
+      events:
+        - push
+        - pull_request
+      branch_patterns:
+        - pattern: 'main'
+          include: true
+        - pattern: 'develop'
+          include: true
+        - pattern: 'master'
+          include: true
+
+    scripts:
+      - name: Set up local.properties
+        script: |
+          echo "RAWG_API_KEY=$RAWG_API_KEY" >> local.properties
+          echo "sdk.dir=$ANDROID_SDK_ROOT" >> local.properties
+
+      - name: Set Gradle permissions
+        script: chmod +x gradlew
+
+      - name: Run unit tests
+        script: ./gradlew test --stacktrace
+
+      - name: Generate Jacoco coverage report
+        script: ./gradlew jacocoTestReport --stacktrace || true
+
+      - name: Upload Coverage to Codecov
+        script: |
+          curl -Os https://uploader.codecov.io/latest/macos/codecov
+          chmod +x codecov
+          ./codecov -t $CODECOV_TOKEN \
+            -f app/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml \
+            -f core/build/reports/jacoco/test/jacocoTestReport.xml \
+            -f favorite/build/reports/jacoco/jacocoTestDebugUnitTestReport/jacocoTestDebugUnitTestReport.xml
+
+      - name: Build debug APK
+        script: ./gradlew assembleDebug --stacktrace
+
+    artifacts:
+      - app/build/outputs/apk/debug/*.apk
+      - app/build/reports/tests/**/*
+      - app/build/reports/jacoco/**/*.xml
+      - core/build/reports/tests/**/*
+
+    publishing:
+      email:
+        recipients:
+          - deltarfd@gmail.com
+        notify:
+          success: true
+          failure: true

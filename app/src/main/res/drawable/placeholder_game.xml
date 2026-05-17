@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Placeholder drawn using vector — dark rectangle with a game controller icon -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="140dp"
+    android:viewportWidth="200"
+    android:viewportHeight="140">
+    <path
+        android:fillColor="#252525"
+        android:pathData="M0,0 L200,0 L200,140 L0,140 Z" />
+    <path
+        android:fillColor="#444444"
+        android:pathData="M85,55 Q85,50 90,50 L110,50 Q115,50 115,55 L115,60 L120,60 Q125,60 125,65 L125,85 Q125,90 120,90 L80,90 Q75,90 75,85 L75,65 Q75,60 80,60 L85,60 Z
+                          M90,65 L90,75 M95,70 L85,70
+                          M112,68 Q114,68 114,70 Q114,72 112,72 Q110,72 110,70 Q110,68 112,68
+                          M118,73 Q120,73 120,75 Q120,77 118,77 Q116,77 116,75 Q116,73 118,73" />
+</vector>

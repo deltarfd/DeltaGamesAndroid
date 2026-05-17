@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <!-- DG Logo — transparent PNG, no white box, matches system splash -->
+    <ImageView
+        android:layout_width="220dp"
+        android:layout_height="160dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_dg_logo_transparent"
+        android:contentDescription="DeltaGames Logo" />
+
+    <!-- Tagline -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:alpha="0.6"
+        android:text="Explore Your Favourite Games"
+        android:textColor="@color/colorTextSecondary"
+        android:textSize="14sp"
+        android:letterSpacing="0.05" />
+
+</LinearLayout>

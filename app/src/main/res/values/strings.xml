@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DeltaGames</string>
+    <string name="app_tagline">Let\'s explore the games!</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_favorite">Favorite</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Home -->
+    <string name="greeting_text">Hey Delta R F D 👋</string>
+    <string name="greeting_subtitle">Let\'s Explore The Games!</string>
+    <string name="new_and_trending">New &amp; Trending</string>
+    <string name="explore_games">Explore The Games</string>
+    <string name="search_title">🔍 Search Games</string>
+    <string name="favorite_title">❤️ Favorite Games</string>
+
+    <!-- Detail -->
+    <string name="rating_label">Rating</string>
+    <string name="release_date_label">Release Date</string>
+    <string name="genres_label">Genres</string>
+    <string name="platforms_label">Platforms</string>
+    <string name="playtime_label">Avg. Playtime</string>
+    <string name="developers_label">Developer</string>
+    <string name="publishers_label">Publisher</string>
+    <string name="description_label">Description</string>
+    <string name="metacritic_label">Metacritic</string>
+    <string name="add_favorite">+ Add to Favorite</string>
+    <string name="remove_favorite">− Remove Favorite</string>
+    <string name="added_to_favorite">Added to favorites ❤️</string>
+    <string name="removed_from_favorite">Removed from favorites</string>
+    <string name="no_description">No description available.</string>
+    <string name="playtime_format">%d hours average</string>
+
+    <!-- Search -->
+    <string name="search_screen_title">Search Games</string>
+    <string name="search_hint">Search games...</string>
+    <string name="search_empty">No games found. Try a different keyword.</string>
+    <string name="search_placeholder">Start typing to search for games</string>
+
+    <!-- Favorite -->
+    <string name="favorite_empty">No favorite games yet.\nStart adding games you love!</string>
+
+    <!-- Profile -->
+    <string name="profile_bio_label">Bio</string>
+    <string name="version_label">Version</string>
+    <string name="api_attribution">Powered by RAWG Video Games Database API</string>
+    <string name="profile_joined">Joined since 19 Sep 2017</string>
+    <string name="version_format">DeltaGames v1.0</string>
+    <string name="edit_caption_title">Edit Caption</string>
+    <string name="edit_caption_hint">Enter your caption...</string>
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+
+    <!-- Language selector labels -->
+    <string name="language_label">Language</string>
+    <string name="language_system">System</string>
+    <string name="language_english">English</string>
+    <string name="language_indonesian">Indonesian</string>
+
+    <!-- Profile actions -->
+    <string name="caption_label">Caption</string>
+    <string name="action_edit">Edit Caption</string>
+
+    <!-- Common -->
+    <string name="not_available">N/A</string>
+    <string name="release_date_format">Released: %s</string>
+
+    <!-- Error -->
+    <string name="error_network">No internet connection. Showing cached data.</string>
+    <string name="error_generic">Something went wrong. Please try again.</string>
+    <string name="retry">Retry</string>
+</resources>
