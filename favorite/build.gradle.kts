@@ -20,7 +20,6 @@ android {
     }
     testOptions {
         unitTests.isReturnDefaultValues = true
-        unitTests.isIncludeAndroidResources = true
         unitTests.all {
             it.extensions.configure(JacocoTaskExtension::class.java) {
                 isIncludeNoLocationClasses = true
@@ -108,34 +107,9 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
-    testImplementation(libs.robolectric)
-    testImplementation(libs.androidx.junit)
-    testImplementation(libs.androidx.fragment.testing)
-    debugImplementation(libs.androidx.fragment.testing.manifest)
 }
 
 tasks.withType<Test> {
     jvmArgs("-noverify")
-}
-
-tasks.register("fixRobolectricManifest") {
-    dependsOn("processDebugUnitTestManifest")
-    doLast {
-        fileTree("build/intermediates").matching {
-            include("**/AndroidManifest.xml")
-        }.forEach { file ->
-            var content = file.readText()
-            if (content.contains("dist:module")) {
-                content = content.replace(Regex("<dist:module.*?</dist:module>", RegexOption.DOT_MATCHES_ALL), "")
-            }
-            content = content.replace("xmlns:dist=\"http://schemas.android.com/apk/distribution\"", "")
-            content = content.replace(Regex("split=\"[^\"]*\""), "")
-            file.writeText(content)
-        }
-    }
-}
-
-tasks.withType<Test>().configureEach {
-    dependsOn("fixRobolectricManifest")
 }
 
