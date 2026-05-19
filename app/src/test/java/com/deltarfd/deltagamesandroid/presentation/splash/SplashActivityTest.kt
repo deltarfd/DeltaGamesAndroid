@@ -1,6 +1,5 @@
 package com.deltarfd.deltagamesandroid.presentation.splash
 
-import android.content.Intent
 import android.os.Build
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -10,9 +9,9 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLooper
-import org.robolectric.Shadows.shadowOf
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.TIRAMISU], application = android.app.Application::class)
@@ -25,6 +24,7 @@ class SplashActivityTest {
     fun `SplashActivity launches MainActivity after delay`() {
         activityRule.scenario.onActivity { activity ->
             // Advance Robolectric's main looper by the splash delay (1800ms)
+            @Suppress("DEPRECATION")
             ShadowLooper.idleMainLooper(2000)
 
             // Verify MainActivity was started

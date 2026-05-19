@@ -17,7 +17,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
@@ -72,7 +72,8 @@ class SearchFragmentRobolectricTest {
         scenario.onFragment { fragment ->
             val binding = getBinding(fragment)
             assertEquals(View.GONE, binding.progressBar.visibility)
-            assertEquals(View.VISIBLE, binding.tvEmpty.visibility)
+            assertEquals(View.GONE, binding.tvEmpty.visibility)
+            assertEquals(View.VISIBLE, binding.layoutNoResults.visibility)
             assertEquals(View.GONE, binding.rvSearchResults.visibility)
         }
     }
@@ -94,8 +95,8 @@ class SearchFragmentRobolectricTest {
             verify { mockViewModel.onQueryChanged("query") }
             
             binding.rvSearchResults.findViewHolderForAdapterPosition(0)?.itemView?.performClick()
-            
-            val layoutManager = binding.rvSearchResults.layoutManager as androidx.recyclerview.widget.GridLayoutManager
+
+            binding.rvSearchResults.layoutManager as androidx.recyclerview.widget.GridLayoutManager
             val scrollListenerField = androidx.recyclerview.widget.RecyclerView::class.java.getDeclaredField("mScrollListeners")
             scrollListenerField.isAccessible = true
             val listeners = scrollListenerField.get(binding.rvSearchResults) as List<androidx.recyclerview.widget.RecyclerView.OnScrollListener>?
@@ -113,7 +114,8 @@ class SearchFragmentRobolectricTest {
             
             assertEquals(View.GONE, binding.progressBar.visibility)
             assertEquals(View.GONE, binding.rvSearchResults.visibility)
-            assertEquals(View.VISIBLE, binding.tvEmpty.visibility)
+            assertEquals(View.GONE, binding.tvEmpty.visibility)
+            assertEquals(View.VISIBLE, binding.layoutNoResults.visibility)
         }
     }
 

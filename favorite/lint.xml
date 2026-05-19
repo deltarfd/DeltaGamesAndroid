@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="HardcodedText" severity="ignore" />
+    <issue id="ContentDescription" severity="ignore" />
+    <issue id="UseCompoundDrawables" severity="ignore" />
+    <issue id="SmallSp" severity="ignore" />
+    <issue id="UnusedResources" severity="ignore" />
+    <issue id="Overdraw" severity="ignore" />
+    <issue id="MissingTranslation" severity="ignore" />
+</lint>

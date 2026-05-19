@@ -52,12 +52,10 @@ class DetailViewModel(private val gameUseCase: IGameUseCase) : ViewModel() {
 
     fun toggleFavorite(game: GameItem) {
         val newState = !game.isFavorite
-        // Update icon IMMEDIATELY — instant, no wait for DB
         _isFavorite.value = newState
         viewModelScope.launch {
             val domainGame = GamePresentationMapper.mapPresentationToDomain(game)
             gameUseCase.setFavoriteGame(domainGame, newState)
-            // Sync local state (detailJob is already cancelled so no re-emission race)
             val current = _detailState.value
             if (current is Resource.Success) {
                 _detailState.value = Resource.Success(current.data!!.copy(isFavorite = newState))

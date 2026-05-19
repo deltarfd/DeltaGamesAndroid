@@ -29,7 +29,7 @@ class MainActivityRobolectricTest {
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
             scenario.onActivity { activity ->
                 val newConfig = Configuration(activity.resources.configuration)
-                newConfig.setLocale(Locale("id", "ID"))
+                newConfig.setLocale(Locale.forLanguageTag("id-ID"))
                 
                 // Call onConfigurationChanged
                 activity.onConfigurationChanged(newConfig)
@@ -43,8 +43,9 @@ class MainActivityRobolectricTest {
     fun `onSupportNavigateUp executes successfully`() {
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
             scenario.onActivity { activity ->
-                val result = activity.onSupportNavigateUp()
-                assertTrue(result || !result) 
+                // Just verify the call doesn't throw
+                activity.onSupportNavigateUp()
+                assertNotNull(activity)
             }
         }
     }

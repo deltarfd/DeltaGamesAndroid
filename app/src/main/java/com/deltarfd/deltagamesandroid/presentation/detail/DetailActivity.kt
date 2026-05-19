@@ -1,6 +1,7 @@
 package com.deltarfd.deltagamesandroid.presentation.detail
 
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -112,7 +113,7 @@ class DetailActivity : AppCompatActivity() {
             tvGenres.text      = game.genres.ifEmpty   { getString(R.string.not_available) }
             tvPlatforms.text   = game.platforms.ifEmpty { getString(R.string.not_available) }
             tvPlaytime.text    = if (game.playtime > 0)
-                                    getString(R.string.playtime_format, game.playtime)
+                                    resources.getQuantityString(R.plurals.playtime_format, game.playtime, game.playtime)
                                  else getString(R.string.not_available)
             tvDevelopers.text  = game.developers.ifEmpty { getString(R.string.not_available) }
             tvPublishers.text  = game.publishers.ifEmpty { getString(R.string.not_available) }
@@ -132,7 +133,7 @@ class DetailActivity : AppCompatActivity() {
         val tint = if (isFavorite) R.color.colorFavorite else R.color.black
         binding.btnFavoriteIcon.apply {
             setImageResource(iconRes)
-            setColorFilter(resources.getColor(tint, theme))
+            setColorFilter(androidx.core.content.ContextCompat.getColor(this@DetailActivity, tint))
         }
     }
 
@@ -143,7 +144,14 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        val statusBarHeight = getStatusBarHeight()
+        val statusBarHeight = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.decorView.rootWindowInsets
+                ?.getInsets(android.view.WindowInsets.Type.statusBars())
+                ?.top ?: 0
+        } else {
+            @Suppress("DEPRECATION")
+            window.decorView.rootWindowInsets?.systemWindowInsetTop ?: 0
+        }
         val margin16 = (16 * resources.displayMetrics.density).toInt()
         (binding.btnBack.layoutParams as? android.widget.FrameLayout.LayoutParams)?.apply {
             topMargin = statusBarHeight + margin16
@@ -153,11 +161,6 @@ class DetailActivity : AppCompatActivity() {
             topMargin = statusBarHeight + margin16
             rightMargin = margin16
         }
-    }
-
-    private fun getStatusBarHeight(): Int {
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        return if (resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
     }
 
     companion object {

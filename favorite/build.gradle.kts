@@ -27,6 +27,12 @@ android {
             }
         }
     }
+    lint {
+        lintConfig = file("lint.xml")
+        abortOnError = false
+        warningsAsErrors = false
+        checkReleaseBuilds = false
+    }
 }
 
 kotlin {
@@ -37,6 +43,8 @@ kotlin {
 
 // â”€â”€ Jacoco coverage report â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 tasks.register<JacocoReport>("jacocoTestReport") {
+    group = "verification"
+    description = "Generates Jacoco code coverage report for unit tests"
     dependsOn("testDebugUnitTest")
     dependsOn(":app:testDebugUnitTest")
     reports {

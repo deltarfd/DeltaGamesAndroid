@@ -17,11 +17,10 @@
         android:label="Search"
         tools:layout="@layout/fragment_search" />
 
-    <fragment
+    <include-dynamic
         android:id="@+id/nav_favorite"
-        android:name="com.deltarfd.deltagamesandroid.favorite.ui.FavoriteFragment"
-        android:label="Favorite"
-        tools:layout="@layout/fragment_favorite" />
+        app:graphResName="nav_favorite"
+        app:moduleName="favorite" />
 
     <fragment
         android:id="@+id/profileFragment"

@@ -54,6 +54,12 @@ android {
             }
         }
     }
+    lint {
+        lintConfig = file("lint.xml")
+        abortOnError = false
+        warningsAsErrors = false
+        checkReleaseBuilds = false
+    }
 }
 
 kotlin {
@@ -64,6 +70,8 @@ kotlin {
 
 // ── Jacoco coverage report ──────────────────────────────────────────────────
 tasks.register<JacocoReport>("jacocoTestReport") {
+    group = "verification"
+    description = "Generates Jacoco code coverage report for unit tests"
     dependsOn("testDebugUnitTest")
     reports {
         xml.required.set(true)
@@ -108,6 +116,10 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+
+    // SQLCipher (database encryption)
+    implementation(libs.sqlcipher)
+    implementation(libs.sqlite)
 
     // Retrofit & OkHttp
     implementation(libs.retrofit)

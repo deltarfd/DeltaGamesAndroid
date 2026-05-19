@@ -32,11 +32,14 @@
     <string name="added_to_favorite">Ditambahkan ke favorit</string>
     <string name="removed_from_favorite">Dihapus dari favorit</string>
     <string name="no_description">Deskripsi tidak tersedia.</string>
-    <string name="playtime_format">%d jam rata-rata</string>
+
+    <plurals name="playtime_format">
+        <item quantity="other">%d jam rata-rata</item>
+    </plurals>
 
     <!-- Search -->
     <string name="search_screen_title">Cari Game</string>
-    <string name="search_hint">Cari game...</string>
+    <string name="search_hint">Cari game…</string>
     <string name="search_empty">Game tidak ditemukan. Coba kata kunci lain.</string>
     <string name="search_placeholder">Mulai mengetik untuk mencari game</string>
 
@@ -50,7 +53,7 @@
     <string name="profile_joined">Bergabung sejak 19 Sep 2017</string>
     <string name="version_format">DeltaGames v1.0</string>
     <string name="edit_caption_title">Edit Keterangan</string>
-    <string name="edit_caption_hint">Masukkan keterangan...</string>
+    <string name="edit_caption_hint">Masukkan keterangan…</string>
     <string name="action_save">Simpan</string>
     <string name="action_cancel">Batal</string>
 
@@ -71,5 +74,8 @@
     <!-- Error -->
     <string name="error_network">Tidak ada koneksi internet. Menampilkan data cache.</string>
     <string name="error_generic">Terjadi kesalahan. Silakan coba lagi.</string>
-    <string name="retry">Coba Lagi</string>
+
+    <!-- Accessibility -->
+    <string name="game_cover_description">Gambar sampul game</string>
+    <string name="rating_icon_description">Rating</string>
 </resources>

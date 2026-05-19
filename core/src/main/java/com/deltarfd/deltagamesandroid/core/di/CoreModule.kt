@@ -6,6 +6,9 @@ import com.deltarfd.deltagamesandroid.core.data.local.GameDatabase
 import com.deltarfd.deltagamesandroid.core.data.remote.ApiService
 import com.deltarfd.deltagamesandroid.core.data.repository.GameRepositoryImpl
 import com.deltarfd.deltagamesandroid.core.domain.repository.IGameRepository
+import com.deltarfd.deltagamesandroid.core.utils.DatabasePassphraseProvider
+import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
+import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -14,8 +17,16 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+private const val API_HOST = "api.rawg.io"
+
 val networkModule = module {
     single {
+        val certificatePinner = CertificatePinner.Builder()
+            .add(API_HOST, "sha256/klEldM61oXP+Ol1yIV5G4odrqhNnbHJbu50iV+pupVA=")
+            .add(API_HOST, "sha256/kIdp6NNEd8wsugYyyIYFsi1ylMCED3hZbSR8ZFsa/A4=")
+            .add(API_HOST, "sha256/mEflZT5enoR1FuXLgYYGqnVEoZvmf9c2bVBpiOjYQ0c=")
+            .build()
+
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) {
                 HttpLoggingInterceptor.Level.BODY
@@ -27,6 +38,7 @@ val networkModule = module {
             .addInterceptor(loggingInterceptor)
             .connectTimeout(120, TimeUnit.SECONDS)
             .readTimeout(120, TimeUnit.SECONDS)
+            .certificatePinner(certificatePinner)
             .build()
     }
     single {
@@ -41,12 +53,18 @@ val networkModule = module {
 
 val databaseModule = module {
     single {
+        // Database encryption using SQLCipher with a randomly generated passphrase
+        // stored securely in Android Keystore (via EncryptedSharedPreferences)
+        val passphrase = DatabasePassphraseProvider.getPassphrase(androidContext())
+        val factory = SupportOpenHelperFactory(passphrase)
+
         Room.databaseBuilder(
             androidContext(),
             GameDatabase::class.java,
-            "DeltaGames.db"
+            "DeltaGames_encrypted.db"
         )
-            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigration(false)
+            .openHelperFactory(factory)
             .build()
     }
     single { get<GameDatabase>().gameDao() }

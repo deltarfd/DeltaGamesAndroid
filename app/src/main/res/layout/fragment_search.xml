@@ -51,6 +51,7 @@
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
+            android:importantForAccessibility="no"
             android:src="@drawable/ic_search"
             app:tint="@color/colorTextHint" />
 
@@ -122,6 +123,35 @@
             android:layout_marginTop="12dp"
             android:gravity="center"
             android:text="@string/search_placeholder"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <!-- No results state -->
+    <LinearLayout
+        android:id="@+id/layoutNoResults"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchBar">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="😕"
+            android:textSize="48sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:text="@string/search_empty"
             android:textColor="@color/colorTextSecondary"
             android:textSize="15sp" />
     </LinearLayout>

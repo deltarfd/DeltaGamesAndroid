@@ -63,6 +63,13 @@ class SearchFragment : Fragment() {
     }
 
     private fun setupSearch() {
+        // Restore previous query if returning to this fragment
+        val currentQuery = viewModel.queryFlow.value
+        if (currentQuery.isNotEmpty() && binding.etSearch.text.toString() != currentQuery) {
+            binding.etSearch.setText(currentQuery)
+            binding.etSearch.setSelection(currentQuery.length)
+        }
+
         binding.etSearch.addTextChangedListener { text ->
             viewModel.onQueryChanged(text.toString())
         }
@@ -75,6 +82,7 @@ class SearchFragment : Fragment() {
                     is Resource.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
                         binding.tvEmpty.visibility = View.GONE
+                        binding.layoutNoResults.visibility = View.GONE
                         binding.rvSearchResults.visibility = View.GONE
                     }
                     is Resource.Success -> {
@@ -82,15 +90,26 @@ class SearchFragment : Fragment() {
                         val data = resource.data ?: emptyList()
                         searchAdapter.submitList(data)
                         val hasQuery = binding.etSearch.text.isNotEmpty()
-                        binding.rvSearchResults.visibility = if (data.isNotEmpty()) View.VISIBLE else View.GONE
-                        binding.tvEmpty.visibility =
-                            if (data.isEmpty() && hasQuery) View.VISIBLE
-                            else if (!hasQuery) View.VISIBLE
-                            else View.GONE
+                        if (data.isNotEmpty()) {
+                            binding.rvSearchResults.visibility = View.VISIBLE
+                            binding.tvEmpty.visibility = View.GONE
+                            binding.layoutNoResults.visibility = View.GONE
+                        } else if (hasQuery) {
+                            // Searched but found nothing
+                            binding.rvSearchResults.visibility = View.GONE
+                            binding.tvEmpty.visibility = View.GONE
+                            binding.layoutNoResults.visibility = View.VISIBLE
+                        } else {
+                            // No query yet — show placeholder
+                            binding.rvSearchResults.visibility = View.GONE
+                            binding.tvEmpty.visibility = View.VISIBLE
+                            binding.layoutNoResults.visibility = View.GONE
+                        }
                     }
                     is Resource.Error -> {
                         binding.progressBar.visibility = View.GONE
-                        binding.tvEmpty.visibility = View.VISIBLE
+                        binding.tvEmpty.visibility = View.GONE
+                        binding.layoutNoResults.visibility = View.VISIBLE
                         binding.rvSearchResults.visibility = View.GONE
                     }
                 }

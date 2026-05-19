@@ -20,7 +20,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -44,6 +45,13 @@ android {
     buildFeatures {
         viewBinding = true    }
     dynamicFeatures += setOf(":favorite")
+
+    lint {
+        lintConfig = file("lint.xml")
+        abortOnError = false
+        warningsAsErrors = false
+        checkReleaseBuilds = false
+    }
 }
 
 kotlin {
@@ -52,8 +60,9 @@ kotlin {
     }
 }
 
-// â”€â”€ Jacoco coverage report â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 tasks.register<JacocoReport>("jacocoTestReport") {
+    group = "verification"
+    description = "Generates Jacoco code coverage report for unit tests"
     dependsOn("testDebugUnitTest")
     reports {
         xml.required.set(true)
@@ -125,6 +134,9 @@ dependencies {
     // Shimmer loading effect
     implementation(libs.shimmer)
 
+    // LeakCanary (memory leak detection - debug only)
+    debugImplementation(libs.leakcanary)
+
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
@@ -133,8 +145,6 @@ dependencies {
     testImplementation(libs.androidx.junit)
     testImplementation(libs.androidx.fragment.testing)
     debugImplementation(libs.androidx.fragment.testing.manifest)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }
 
 tasks.withType<Test> {

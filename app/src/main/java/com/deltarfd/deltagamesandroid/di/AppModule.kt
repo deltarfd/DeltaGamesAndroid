@@ -5,7 +5,7 @@ import com.deltarfd.deltagamesandroid.core.domain.usecase.IGameUseCase
 import com.deltarfd.deltagamesandroid.presentation.detail.DetailViewModel
 import com.deltarfd.deltagamesandroid.presentation.home.HomeViewModel
 import com.deltarfd.deltagamesandroid.presentation.search.SearchViewModel
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val useCaseModule = module {

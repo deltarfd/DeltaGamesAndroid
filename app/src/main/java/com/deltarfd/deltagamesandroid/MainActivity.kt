@@ -16,7 +16,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        overridePendingTransition(0, 0)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -37,10 +36,6 @@ class MainActivity : AppCompatActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
-        // Apply the new configuration to this activity's resources immediately
-        @Suppress("DEPRECATION")
-        resources.updateConfiguration(newConfig, resources.displayMetrics)
-
         // Re-navigate to the current destination with no animation.
         // This forces the current fragment to re-inflate its views using the
         // updated locale, so all @string/ references pick up the new language.
@@ -55,10 +50,5 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp() || super.onSupportNavigateUp()
-    }
-
-    override fun finish() {
-        super.finish()
-        overridePendingTransition(0, 0)
     }
 }

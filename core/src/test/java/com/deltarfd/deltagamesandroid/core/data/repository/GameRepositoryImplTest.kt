@@ -153,7 +153,7 @@ class GameRepositoryImplTest {
 
     @Test
     fun `getGameDetail API error emits Error`() = runTest {
-        io.mockk.every { gameDao.getGameById(1) } returns kotlinx.coroutines.flow.flowOf(null)
+        every { gameDao.getGameById(1) } returns kotlinx.coroutines.flow.flowOf(null)
         coEvery { apiService.getGameDetail(1) } throws RuntimeException("Network Error")
 
         val emissions = repository.getGameDetail(1).toList()
@@ -165,7 +165,7 @@ class GameRepositoryImplTest {
 
     @Test
     fun `getGameDetail API error with cached data emits Success`() = runTest {
-        io.mockk.every { gameDao.getGameById(1) } returns kotlinx.coroutines.flow.flowOf(makeGameEntity(id = 1))
+        every { gameDao.getGameById(1) } returns kotlinx.coroutines.flow.flowOf(makeGameEntity(id = 1))
         coEvery { apiService.getGameDetail(1) } throws RuntimeException("Network Error")
 
         val emissions = repository.getGameDetail(1).toList()

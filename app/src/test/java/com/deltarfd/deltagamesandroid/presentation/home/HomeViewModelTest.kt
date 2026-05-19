@@ -1,6 +1,7 @@
+@file:Suppress("UnusedFlow")
+
 package com.deltarfd.deltagamesandroid.presentation.home
 
-import app.cash.turbine.test
 import com.deltarfd.deltagamesandroid.core.domain.model.Game
 import com.deltarfd.deltagamesandroid.core.domain.usecase.IGameUseCase
 import com.deltarfd.deltagamesandroid.core.utils.Resource
@@ -56,12 +57,9 @@ class HomeViewModelTest {
         every { useCase.getAllGames(1) } returns flowOf(Resource.Success(makePage(20)))
         viewModel = HomeViewModel(useCase)
 
-        viewModel.gamesState.test {
-            testDispatcher.scheduler.advanceUntilIdle()
-            val emissions = cancelAndConsumeRemainingEvents()
-            val lastValue = emissions.filterIsInstance<app.cash.turbine.Event.Item<Resource<*>>>().last().value
-            assertTrue(lastValue is Resource.Success)
-        }
+        testDispatcher.scheduler.advanceUntilIdle()
+        val state = viewModel.gamesState.value
+        assertTrue(state is Resource.Success)
     }
 
     @Test

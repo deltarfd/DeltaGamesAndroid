@@ -1,3 +1,5 @@
+@file:Suppress("UnusedFlow")
+
 package com.deltarfd.deltagamesandroid.presentation.search
 
 import com.deltarfd.deltagamesandroid.core.domain.model.Game

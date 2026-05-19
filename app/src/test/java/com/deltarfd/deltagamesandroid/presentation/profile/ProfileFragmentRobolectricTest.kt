@@ -1,7 +1,6 @@
 package com.deltarfd.deltagamesandroid.presentation.profile
 
 import android.app.AlertDialog
-import android.content.Context
 import android.os.Build
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatDelegate
@@ -70,7 +69,7 @@ class ProfileFragmentRobolectricTest {
             binding.btnEdit.performClick()
 
             val dialog = ShadowAlertDialog.getLatestAlertDialog() as AlertDialog
-            val editText = dialog.findViewById<EditText>(12345)
+            val editText = dialog.findViewById<EditText>(R.id.edit_caption_edittext)
             
             org.junit.Assert.assertNotNull("EditText not found in Dialog!", editText)
             

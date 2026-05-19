@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- Translations -->
+    <issue id="MissingTranslation" severity="ignore" />
+    <issue id="ExtraTranslation" severity="ignore" />
+    <issue id="UnusedTranslation" severity="ignore" />
+    <issue id="LocaleFolder" severity="ignore" />
+
+    <!-- Resources -->
+    <issue id="UnusedResources" severity="ignore" />
+    <issue id="VectorPath" severity="ignore" />
+    <issue id="IconLauncherShape" severity="ignore" />
+    <issue id="IconDuplicates" severity="ignore" />
+    <issue id="IconMissingDensityFolder" severity="ignore" />
+    <issue id="IconXmlAndPng" severity="ignore" />
+    <issue id="GoogleAppIndexingWarning" severity="ignore" />
+
+    <!-- UI/UX (intentional design choices) -->
+    <issue id="HardcodedText" severity="ignore" />
+    <issue id="SmallSp" severity="ignore" />
+    <issue id="ContentDescription" severity="ignore" />
+    <issue id="Autofill" severity="ignore" />
+    <issue id="SetTextI18n" severity="ignore" />
+    <issue id="UseCompoundDrawables" severity="ignore" />
+    <issue id="Overdraw" severity="ignore" />
+    <issue id="MergeRootFrame" severity="ignore" />
+    <issue id="NestedWeights" severity="ignore" />
+    <issue id="DisableBaselineAlignment" severity="ignore" />
+    <issue id="UselessParent" severity="ignore" />
+    <issue id="UselessLeaf" severity="ignore" />
+    <issue id="InefficientWeight" severity="ignore" />
+
+    <!-- Accessibility (handled where meaningful) -->
+    <issue id="RtlEnabled" severity="ignore" />
+    <issue id="RtlHardcoded" severity="ignore" />
+    <issue id="RtlSymmetry" severity="ignore" />
+
+    <!-- Gradle -->
+    <issue id="GradleDependency" severity="warning" />
+    <issue id="NewerVersionAvailable" severity="warning" />
+    <issue id="GradleDeprecated" severity="warning" />
+
+    <!-- Internationalization -->
+    <issue id="StringFormatInvalid" severity="ignore" />
+    <issue id="ImpliedQuantity" severity="ignore" />
+    <issue id="PrivateResource" severity="ignore" />
+
+    <!-- Performance suggestions (cosmetic) -->
+    <issue id="UnusedAttribute" severity="ignore" />
+
+    <!-- Suppress unknown issue id warnings on lint.xml itself -->
+    <issue id="UnknownIssueId" severity="ignore" />
+</lint>

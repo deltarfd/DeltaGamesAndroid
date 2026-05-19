@@ -32,11 +32,15 @@
     <string name="added_to_favorite">Added to favorites ❤️</string>
     <string name="removed_from_favorite">Removed from favorites</string>
     <string name="no_description">No description available.</string>
-    <string name="playtime_format">%d hours average</string>
+
+    <plurals name="playtime_format">
+        <item quantity="one">%d hour average</item>
+        <item quantity="other">%d hours average</item>
+    </plurals>
 
     <!-- Search -->
     <string name="search_screen_title">Search Games</string>
-    <string name="search_hint">Search games...</string>
+    <string name="search_hint">Search games…</string>
     <string name="search_empty">No games found. Try a different keyword.</string>
     <string name="search_placeholder">Start typing to search for games</string>
 
@@ -50,7 +54,7 @@
     <string name="profile_joined">Joined since 19 Sep 2017</string>
     <string name="version_format">DeltaGames v1.0</string>
     <string name="edit_caption_title">Edit Caption</string>
-    <string name="edit_caption_hint">Enter your caption...</string>
+    <string name="edit_caption_hint">Enter your caption…</string>
     <string name="action_save">Save</string>
     <string name="action_cancel">Cancel</string>
 
@@ -71,5 +75,8 @@
     <!-- Error -->
     <string name="error_network">No internet connection. Showing cached data.</string>
     <string name="error_generic">Something went wrong. Please try again.</string>
-    <string name="retry">Retry</string>
+
+    <!-- Accessibility -->
+    <string name="game_cover_description">Game cover image</string>
+    <string name="rating_icon_description">Rating</string>
 </resources>

@@ -6,23 +6,22 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.deltarfd.deltagamesandroid.core.utils.Resource
+import com.deltarfd.deltagamesandroid.databinding.ActivityDetailBinding
 import com.deltarfd.deltagamesandroid.presentation.model.GameItem
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import org.robolectric.annotation.Config
-import com.deltarfd.deltagamesandroid.databinding.ActivityDetailBinding
 
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [Build.VERSION_CODES.TIRAMISU], application = android.app.Application::class)

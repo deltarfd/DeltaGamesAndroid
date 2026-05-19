@@ -13,6 +13,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.Fragment
 import com.deltarfd.deltagamesandroid.R
 import com.deltarfd.deltagamesandroid.databinding.FragmentProfileBinding
+import androidx.core.content.edit
 
 class ProfileFragment : Fragment() {
 
@@ -22,6 +23,7 @@ class ProfileFragment : Fragment() {
     companion object {
         private const val PREF_NAME   = "delta_games_profile"
         private const val KEY_CAPTION = "caption"
+        private const val DEFAULT_CAPTION = "Hello World"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -33,7 +35,7 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val prefs = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-        val savedCaption = prefs.getString(KEY_CAPTION, "Hello World") ?: "Hello World"
+        val savedCaption = prefs.getString(KEY_CAPTION, DEFAULT_CAPTION) ?: DEFAULT_CAPTION
 
         // Read current locale from AppCompatDelegate — source of truth after recreation
         val currentLocales = AppCompatDelegate.getApplicationLocales()
@@ -58,10 +60,10 @@ class ProfileFragment : Fragment() {
             chipIndonesian.setOnClickListener { switchLocale("indonesian") }
 
             btnEdit.setOnClickListener {
-                val caption = prefs.getString(KEY_CAPTION, "Hello World") ?: "Hello World"
+                val caption = prefs.getString(KEY_CAPTION, DEFAULT_CAPTION) ?: DEFAULT_CAPTION
                 showEditCaptionDialog(caption) { newCaption ->
                     tvBio.text = "\"$newCaption\""
-                    prefs.edit().putString(KEY_CAPTION, newCaption).apply()
+                    prefs.edit { putString(KEY_CAPTION, newCaption) }
                 }
             }
         }
@@ -78,10 +80,10 @@ class ProfileFragment : Fragment() {
 
     private fun showEditCaptionDialog(current: String, onSave: (String) -> Unit) {
         val editText = EditText(requireContext()).apply {
-            id = 12345
+            id = R.id.edit_caption_edittext
             setText(current)
-            setTextColor(resources.getColor(R.color.white, null))
-            setHintTextColor(resources.getColor(R.color.colorTextHint, null))
+            setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.white))
+            setHintTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.colorTextHint))
             hint = getString(R.string.edit_caption_hint)
             setSelection(text.length)
         }
@@ -95,7 +97,7 @@ class ProfileFragment : Fragment() {
             .setTitle(getString(R.string.edit_caption_title))
             .setView(container)
             .setPositiveButton(getString(R.string.action_save)) { dialog, _ ->
-                val dialogEditText = (dialog as? AlertDialog)?.findViewById<EditText>(12345) ?: editText
+                val dialogEditText = (dialog as? AlertDialog)?.findViewById(R.id.edit_caption_edittext) ?: editText
                 val newCaption = dialogEditText.text.trim().toString()
                 if (newCaption.isNotEmpty()) onSave(newCaption)
                 dialog.dismiss()
@@ -108,7 +110,12 @@ class ProfileFragment : Fragment() {
         with(binding) {
             fun chip(view: android.widget.TextView, selected: Boolean) {
                 view.setBackgroundResource(if (selected) R.drawable.bg_chip_selected else R.drawable.bg_chip_default)
-                view.setTextColor(resources.getColor(if (selected) R.color.black else R.color.colorTextSecondary, null))
+                view.setTextColor(
+                    androidx.core.content.ContextCompat.getColor(
+                        requireContext(),
+                        if (selected) R.color.black else R.color.colorTextSecondary
+                    )
+                )
             }
             chip(chipSystem,      lang == "system")
             chip(chipEnglish,     lang == "english")

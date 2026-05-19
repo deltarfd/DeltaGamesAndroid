@@ -14,6 +14,8 @@ import org.koin.core.logger.Level
 class DeltaGamesApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        System.loadLibrary("sqlcipher")
+
         startKoin {
             androidLogger(Level.ERROR)
             androidContext(this@DeltaGamesApp)

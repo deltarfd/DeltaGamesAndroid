@@ -17,7 +17,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
@@ -146,7 +146,7 @@ class HomeFragmentRobolectricTest {
             // To simulate scrolling to the bottom:
             // The logic: scrollY >= child.measuredHeight - nsv.measuredHeight - 300
             val scrollView = binding.scrollView
-            val child = scrollView.getChildAt(0)
+            scrollView.getChildAt(0)
             
             // Invoke the listener directly
             scrollView.let {

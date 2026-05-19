@@ -63,6 +63,7 @@ class TrendingAdapter(
         fun formatPlatforms(platforms: String): String {
             if (platforms.isBlank()) return ""
             return platforms.split(",")
+                .asSequence()
                 .map { it.trim() }
                 .map { p ->
                     when {

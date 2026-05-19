@@ -15,6 +15,7 @@
             android:id="@+id/ivGameCover"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:contentDescription="@string/game_cover_description"
             android:scaleType="centerCrop" />
 
         <!-- Bottom-heavy gradient for text readability -->
@@ -42,6 +43,7 @@
                 <ImageView
                     android:layout_width="12dp"
                     android:layout_height="12dp"
+                    android:importantForAccessibility="no"
                     android:src="@drawable/ic_star"
                     app:tint="@color/colorRating" />
 
@@ -110,3 +112,5 @@
     </FrameLayout>
 
 </androidx.cardview.widget.CardView>
+
+
