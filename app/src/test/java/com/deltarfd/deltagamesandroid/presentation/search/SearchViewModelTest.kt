@@ -191,7 +191,7 @@ class SearchViewModelTest {
     @Test
     fun `loadMoreResults error handles correctly and rolls back page`() = runTest {
         every { useCase.searchGames("test", 1) } returns flowOf(Resource.Success(makePage(20)))
-        every { useCase.searchGames("test", 2) } returns flowOf(Resource.Error("Pagination error"))
+        every { useCase.searchGames("test", 2) } returns flowOf(Resource.Loading(), Resource.Error("Pagination error"))
         
         viewModel.onQueryChanged("test")
         testDispatcher.scheduler.advanceUntilIdle()
@@ -200,5 +200,48 @@ class SearchViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertFalse(viewModel.isLoadingMore.value)
+    }
+
+    @Test
+    fun `newSearch error with empty message`() = runTest {
+        every { useCase.searchGames("null", 1) } returns flowOf(Resource.Loading(), Resource.Error(""))
+
+        viewModel.onQueryChanged("null")
+        advanceTimeBy(600)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.searchState.value
+        assertTrue(state is Resource.Error)
+    }
+
+    @Test
+    fun `newSearch success with empty data`() = runTest {
+        every { useCase.searchGames("empty", 1) } returns flowOf(Resource.Loading(), Resource.Success(emptyList()))
+
+        viewModel.onQueryChanged("empty")
+        advanceTimeBy(600)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.searchState.value
+        assertTrue(state is Resource.Success)
+        assertEquals(0, (state as Resource.Success).data?.size)
+    }
+
+    @Test
+    fun `loadMoreResults success with empty data treats as no more pages`() = runTest {
+        every { useCase.searchGames("test", 1) } returns flowOf(Resource.Loading(), Resource.Success(makePage(20)))
+        every { useCase.searchGames("test", 2) } returns flowOf(Resource.Loading(), Resource.Success(emptyList()))
+
+        viewModel.onQueryChanged("test")
+        advanceTimeBy(600)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.loadMoreResults()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Empty means no more pages
+        viewModel.loadMoreResults()
+        testDispatcher.scheduler.advanceUntilIdle()
+        verify(exactly = 0) { useCase.searchGames("test", 3) }
     }
 }

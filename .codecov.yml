@@ -1,0 +1,39 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 90%
+        threshold: 2%
+    patch:
+      default:
+        target: 80%
+
+ignore:
+  # Android framework classes (UI - tested via Robolectric, not fully coverable)
+  - "app/src/main/java/**/presentation/home/HomeFragment.kt"
+  - "app/src/main/java/**/presentation/home/GamesAdapter.kt"
+  - "app/src/main/java/**/presentation/home/TrendingAdapter.kt"
+  - "app/src/main/java/**/presentation/search/SearchFragment.kt"
+  - "app/src/main/java/**/presentation/profile/ProfileFragment.kt"
+  - "app/src/main/java/**/presentation/detail/DetailActivity.kt"
+  - "app/src/main/java/**/presentation/splash/SplashActivity.kt"
+  - "app/src/main/java/**/MainActivity.kt"
+  - "app/src/main/java/**/DeltaGamesApp.kt"
+  - "favorite/src/main/java/**/FavoriteFragment.kt"
+  - "favorite/src/main/java/**/FavoriteAdapter.kt"
+  # DI modules (configuration, not logic)
+  - "app/src/main/java/**/di/**"
+  - "core/src/main/java/**/di/**"
+  - "favorite/src/main/java/**/di/**"
+  # Security (requires real device/emulator)
+  - "core/src/main/java/**/DatabasePassphraseProvider.kt"
+  # Data classes / interfaces (no logic to test)
+  - "core/src/main/java/**/entity/**"
+  - "core/src/main/java/**/model/**"
+  - "core/src/main/java/**/response/**"
+  - "app/src/main/java/**/model/**"
+  - "core/src/main/java/**/domain/repository/**"
+  - "core/src/main/java/**/domain/usecase/IGameUseCase.kt"
+  - "core/src/main/java/**/data/local/GameDatabase.kt"
+  - "core/src/main/java/**/data/local/GameDao.kt"
+  - "core/src/main/java/**/data/remote/ApiService.kt"

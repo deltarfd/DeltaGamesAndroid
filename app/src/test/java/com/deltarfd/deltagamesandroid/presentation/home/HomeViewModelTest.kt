@@ -203,4 +203,76 @@ class HomeViewModelTest {
         assertTrue(state is Resource.Error)
         assertEquals("Trending error", (state as Resource.Error).message)
     }
+
+    @Test
+    fun `loadGames error with null message uses default`() = runTest {
+        every { useCase.getAllGames(1) } returns flowOf(Resource.Loading(), Resource.Error(""))
+        viewModel = HomeViewModel(useCase)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.gamesState.value
+        assertTrue(state is Resource.Error)
+    }
+
+    @Test
+    fun `loadGames success with empty data`() = runTest {
+        every { useCase.getAllGames(1) } returns flowOf(Resource.Loading(), Resource.Success(emptyList()))
+        viewModel = HomeViewModel(useCase)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.gamesState.value
+        assertTrue(state is Resource.Success)
+        assertEquals(0, (state as Resource.Success).data?.size)
+    }
+
+    @Test
+    fun `loadTrending success with empty data`() = runTest {
+        every { useCase.getAllGames(1) } returns flowOf(Resource.Loading(), Resource.Success(makePage(20)))
+        every { useCase.getTrendingGames() } returns flowOf(Resource.Loading(), Resource.Success(emptyList()))
+        viewModel = HomeViewModel(useCase)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.trendingState.value
+        assertTrue(state is Resource.Success)
+        assertEquals(0, (state as Resource.Success).data?.size)
+    }
+
+    @Test
+    fun `loadTrending error with null message uses default`() = runTest {
+        every { useCase.getAllGames(1) } returns flowOf(Resource.Loading(), Resource.Success(makePage(20)))
+        every { useCase.getTrendingGames() } returns flowOf(Resource.Loading(), Resource.Error(""))
+        viewModel = HomeViewModel(useCase)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.trendingState.value
+        assertTrue(state is Resource.Error)
+    }
+
+    @Test
+    fun `loadMoreGames success with empty data treats as no more pages`() = runTest {
+        every { useCase.getAllGames(1) } returns flowOf(Resource.Loading(), Resource.Success(makePage(20)))
+        every { useCase.getAllGames(2) } returns flowOf(Resource.Loading(), Resource.Success(emptyList()))
+        viewModel = HomeViewModel(useCase)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.loadMoreGames()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Empty result means no more pages
+        viewModel.loadMoreGames()
+        testDispatcher.scheduler.advanceUntilIdle()
+        verify(exactly = 0) { useCase.getAllGames(3) }
+    }
+
+    @Test
+    fun `loadTrending success emits mapped items`() = runTest {
+        every { useCase.getAllGames(1) } returns flowOf(Resource.Loading(), Resource.Success(makePage(20)))
+        every { useCase.getTrendingGames() } returns flowOf(Resource.Loading(), Resource.Success(makePage(5)))
+        viewModel = HomeViewModel(useCase)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.trendingState.value
+        assertTrue(state is Resource.Success)
+        assertEquals(5, (state as Resource.Success).data?.size)
+    }
 }
