@@ -71,7 +71,7 @@ class GameRepositoryImplTest {
 
         repository.getAllGames(1).toList()
 
-        coVerify { gameDao.insertGames(any()) }
+        coVerify { gameDao.upsertGamesPreservingFavorites(any()) }
     }
 
     @Test
@@ -80,7 +80,7 @@ class GameRepositoryImplTest {
 
         repository.getAllGames(2).toList()
 
-        coVerify(exactly = 0) { gameDao.insertGames(any()) }
+        coVerify(exactly = 0) { gameDao.upsertGamesPreservingFavorites(any()) }
     }
 
     @Test
@@ -107,6 +107,17 @@ class GameRepositoryImplTest {
     }
 
     @Test
+    fun `getAllGames page 1 API error with empty cache and null message uses default error`() = runTest {
+        coEvery { apiService.getGames(page = 1) } throws RuntimeException()
+        every { gameDao.getAllGames() } returns flowOf(emptyList())
+
+        val emissions = repository.getAllGames(1).toList()
+
+        val error = emissions.filterIsInstance<Resource.Error<List<Game>>>().first()
+        assertEquals("Unknown error", error.message)
+    }
+
+    @Test
     fun `getAllGames page 2 API error emits Error directly`() = runTest {
         coEvery { apiService.getGames(page = 2) } throws RuntimeException("Timeout")
 
@@ -114,6 +125,16 @@ class GameRepositoryImplTest {
 
         assertTrue(emissions.last() is Resource.Error)
         assertEquals("Timeout", (emissions.last() as Resource.Error).message)
+    }
+
+    @Test
+    fun `getAllGames page 2 API error with null message uses default error`() = runTest {
+        coEvery { apiService.getGames(page = 2) } throws RuntimeException()
+
+        val emissions = repository.getAllGames(2).toList()
+
+        assertTrue(emissions.last() is Resource.Error)
+        assertEquals("Unknown error", (emissions.last() as Resource.Error).message)
     }
 
     @Test
@@ -164,6 +185,18 @@ class GameRepositoryImplTest {
     }
 
     @Test
+    fun `getGameDetail API error with null message uses default error`() = runTest {
+        every { gameDao.getGameById(1) } returns kotlinx.coroutines.flow.flowOf(null)
+        coEvery { apiService.getGameDetail(1) } throws RuntimeException()
+
+        val emissions = repository.getGameDetail(1).toList()
+
+        assertTrue(emissions[0] is Resource.Loading)
+        assertTrue(emissions[1] is Resource.Error)
+        assertEquals("Unknown error", (emissions[1] as Resource.Error).message)
+    }
+
+    @Test
     fun `getGameDetail API error with cached data emits Success`() = runTest {
         every { gameDao.getGameById(1) } returns kotlinx.coroutines.flow.flowOf(makeGameEntity(id = 1))
         coEvery { apiService.getGameDetail(1) } throws RuntimeException("Network Error")
@@ -173,6 +206,29 @@ class GameRepositoryImplTest {
         assertTrue(emissions[0] is Resource.Loading)
         assertTrue(emissions[1] is Resource.Success)
         assertEquals(1, (emissions[1] as Resource.Success).data?.id)
+    }
+
+    @Test
+    fun `getGameDetail outer exception emits Error`() = runTest {
+        // Simulate an exception thrown by the DAO flow itself
+        every { gameDao.getGameById(1) } throws RuntimeException("DB crashed")
+
+        val emissions = repository.getGameDetail(1).toList()
+
+        assertTrue(emissions[0] is Resource.Loading)
+        assertTrue(emissions[1] is Resource.Error)
+        assertEquals("DB crashed", (emissions[1] as Resource.Error).message)
+    }
+
+    @Test
+    fun `getGameDetail outer exception with null message uses default error`() = runTest {
+        every { gameDao.getGameById(1) } throws RuntimeException()
+
+        val emissions = repository.getGameDetail(1).toList()
+
+        assertTrue(emissions[0] is Resource.Loading)
+        assertTrue(emissions[1] is Resource.Error)
+        assertEquals("Unknown error", (emissions[1] as Resource.Error).message)
     }
 
     // ── getTrendingGames ───────────────────────────────────────────────────
@@ -195,6 +251,16 @@ class GameRepositoryImplTest {
 
         assertTrue(emissions.last() is Resource.Error)
         assertEquals("Server error", (emissions.last() as Resource.Error).message)
+    }
+
+    @Test
+    fun `getTrendingGames API error with null message uses default error`() = runTest {
+        coEvery { apiService.getTrendingGames() } throws RuntimeException()
+
+        val emissions = repository.getTrendingGames().toList()
+
+        assertTrue(emissions.last() is Resource.Error)
+        assertEquals("Unknown error", (emissions.last() as Resource.Error).message)
     }
 
     // ── searchGames ────────────────────────────────────────────────────────
@@ -232,6 +298,17 @@ class GameRepositoryImplTest {
     }
 
     @Test
+    fun `searchGames page 1 error with empty local and null message uses default error`() = runTest {
+        coEvery { apiService.searchGames(query = "zzz", page = 1) } throws RuntimeException()
+        every { gameDao.searchGames("zzz") } returns flowOf(emptyList())
+
+        val emissions = repository.searchGames("zzz", 1).toList()
+
+        val error = emissions.filterIsInstance<Resource.Error<List<Game>>>().first()
+        assertEquals("Unknown error", error.message)
+    }
+
+    @Test
     fun `searchGames page 2 error emits Error directly`() = runTest {
         coEvery { apiService.searchGames(query = "zelda", page = 2) } throws RuntimeException("Timeout")
 
@@ -239,6 +316,16 @@ class GameRepositoryImplTest {
 
         assertTrue(emissions.last() is Resource.Error)
         assertEquals("Timeout", (emissions.last() as Resource.Error).message)
+    }
+
+    @Test
+    fun `searchGames page 2 error with null message uses default error`() = runTest {
+        coEvery { apiService.searchGames(query = "zelda", page = 2) } throws RuntimeException()
+
+        val emissions = repository.searchGames("zelda", 2).toList()
+
+        assertTrue(emissions.last() is Resource.Error)
+        assertEquals("Unknown error", (emissions.last() as Resource.Error).message)
     }
 
     // ── getFavoriteGames ───────────────────────────────────────────────────

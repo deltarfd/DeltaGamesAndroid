@@ -75,7 +75,7 @@ class SearchViewModelTest {
 
     @Test
     fun `search query after debounce populates results`() = runTest {
-        every { useCase.searchGames("zelda", 1) } returns flowOf(Resource.Success(makePage(10)))
+        every { useCase.searchGames("zelda", 1) } returns flowOf(Resource.Loading(), Resource.Success(makePage(10)))
         viewModel.onQueryChanged("zelda")
         advanceTimeBy(600) // past 500ms debounce
         testDispatcher.scheduler.advanceUntilIdle()
@@ -103,8 +103,8 @@ class SearchViewModelTest {
 
     @Test
     fun `loadMoreResults appends next page to existing results`() = runTest {
-        every { useCase.searchGames("zelda", 1) } returns flowOf(Resource.Success(makePage(20)))
-        every { useCase.searchGames("zelda", 2) } returns flowOf(Resource.Success(makePage(20, startId = 21)))
+        every { useCase.searchGames("zelda", 1) } returns flowOf(Resource.Loading(), Resource.Success(makePage(20)))
+        every { useCase.searchGames("zelda", 2) } returns flowOf(Resource.Loading(), Resource.Success(makePage(20, startId = 21)))
 
         viewModel.onQueryChanged("zelda")
         advanceTimeBy(600)
@@ -126,8 +126,8 @@ class SearchViewModelTest {
 
     @Test
     fun `loadMoreResults stops when page returns fewer than 20 items`() = runTest {
-        every { useCase.searchGames("zelda", 1) } returns flowOf(Resource.Success(makePage(20)))
-        every { useCase.searchGames("zelda", 2) } returns flowOf(Resource.Success(makePage(5, startId = 21)))
+        every { useCase.searchGames("zelda", 1) } returns flowOf(Resource.Loading(), Resource.Success(makePage(20)))
+        every { useCase.searchGames("zelda", 2) } returns flowOf(Resource.Loading(), Resource.Success(makePage(5, startId = 21)))
 
         viewModel.onQueryChanged("zelda")
         advanceTimeBy(600)
@@ -142,6 +142,26 @@ class SearchViewModelTest {
 
         verify(exactly = 1) { useCase.searchGames("zelda", 2) }
         verify(exactly = 0) { useCase.searchGames("zelda", 3) }
+    }
+
+    @Test
+    fun `loadMoreResults with empty results sets hasMorePages to false`() = runTest {
+        every { useCase.searchGames("zelda", 1) } returns flowOf(Resource.Loading(), Resource.Success(makePage(20)))
+        every { useCase.searchGames("zelda", 2) } returns flowOf(Resource.Loading(), Resource.Success(emptyList()))
+
+        viewModel.onQueryChanged("zelda")
+        advanceTimeBy(600)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.loadMoreResults()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Should not try page 3
+        viewModel.loadMoreResults()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        verify(exactly = 0) { useCase.searchGames("zelda", 3) }
+        assertFalse(viewModel.isLoadingMore.value)
     }
 
     @Test

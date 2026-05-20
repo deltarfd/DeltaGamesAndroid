@@ -54,7 +54,7 @@ class HomeViewModelTest {
 
     @Test
     fun `initial load emits Loading then Success`() = runTest {
-        every { useCase.getAllGames(1) } returns flowOf(Resource.Success(makePage(20)))
+        every { useCase.getAllGames(1) } returns flowOf(Resource.Loading(), Resource.Success(makePage(20)))
         viewModel = HomeViewModel(useCase)
 
         testDispatcher.scheduler.advanceUntilIdle()
@@ -87,8 +87,8 @@ class HomeViewModelTest {
 
     @Test
     fun `loadMoreGames appends results to existing list`() = runTest {
-        every { useCase.getAllGames(1) } returns flowOf(Resource.Success(makePage(20, startId = 1)))
-        every { useCase.getAllGames(2) } returns flowOf(Resource.Success(makePage(20, startId = 21)))
+        every { useCase.getAllGames(1) } returns flowOf(Resource.Loading(), Resource.Success(makePage(20, startId = 1)))
+        every { useCase.getAllGames(2) } returns flowOf(Resource.Loading(), Resource.Success(makePage(20, startId = 21)))
         viewModel = HomeViewModel(useCase)
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -117,8 +117,8 @@ class HomeViewModelTest {
 
     @Test
     fun `loadMoreGames stops when page returns fewer than 20 items`() = runTest {
-        every { useCase.getAllGames(1) } returns flowOf(Resource.Success(makePage(20)))
-        every { useCase.getAllGames(2) } returns flowOf(Resource.Success(makePage(5, startId = 21))) // last page
+        every { useCase.getAllGames(1) } returns flowOf(Resource.Loading(), Resource.Success(makePage(20)))
+        every { useCase.getAllGames(2) } returns flowOf(Resource.Loading(), Resource.Success(makePage(5, startId = 21))) // last page
         viewModel = HomeViewModel(useCase)
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -131,6 +131,24 @@ class HomeViewModelTest {
 
         verify(exactly = 1) { useCase.getAllGames(2) }
         verify(exactly = 0) { useCase.getAllGames(3) }
+    }
+
+    @Test
+    fun `loadMoreGames with empty results sets hasMorePages to false`() = runTest {
+        every { useCase.getAllGames(1) } returns flowOf(Resource.Loading(), Resource.Success(makePage(20)))
+        every { useCase.getAllGames(2) } returns flowOf(Resource.Loading(), Resource.Success(emptyList()))
+        viewModel = HomeViewModel(useCase)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.loadMoreGames()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Should not try page 3
+        viewModel.loadMoreGames()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        verify(exactly = 0) { useCase.getAllGames(3) }
+        assertFalse(viewModel.isLoadingMore.value)
     }
 
     @Test
@@ -176,8 +194,8 @@ class HomeViewModelTest {
 
     @Test
     fun `loadTrending error emits Error state`() = runTest {
-        every { useCase.getAllGames(1) } returns flowOf(Resource.Success(makePage(20)))
-        every { useCase.getTrendingGames() } returns flowOf(Resource.Error("Trending error"))
+        every { useCase.getAllGames(1) } returns flowOf(Resource.Loading(), Resource.Success(makePage(20)))
+        every { useCase.getTrendingGames() } returns flowOf(Resource.Loading(), Resource.Error("Trending error"))
         viewModel = HomeViewModel(useCase)
         testDispatcher.scheduler.advanceUntilIdle()
 

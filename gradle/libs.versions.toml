@@ -88,6 +88,7 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectricVersion" }
+androidx-test-core = { group = "androidx.test", name = "core", version = "1.6.1" }
 androidx-fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "fragmentTestingVersion" }
 androidx-fragment-testing-manifest = { group = "androidx.fragment", name = "fragment-testing-manifest", version.ref = "fragmentTestingVersion" }
 

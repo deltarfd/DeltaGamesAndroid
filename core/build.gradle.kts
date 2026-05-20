@@ -47,6 +47,7 @@ android {
 
     testOptions {
         unitTests.isReturnDefaultValues = true
+        unitTests.isIncludeAndroidResources = true
         unitTests.all {
             it.extensions.configure(JacocoTaskExtension::class.java) {
                 isIncludeNoLocationClasses = true
@@ -88,7 +89,13 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/*_MembersInjector.*", "**/*Module*.*", "**/*_Impl*.*",
         "**/entity/**", "**/model/**", "**/response/**",
         "**/*Activity*.*", "**/*Fragment*.*", "**/*Adapter*.*", "**/*ViewHolder*.*",
-        "**/databinding/**", "**/android/databinding/**"
+        "**/databinding/**", "**/android/databinding/**",
+        "**/DatabasePassphraseProvider.*",
+        "**/GameDatabase.*", "**/GameDao.*", "**/GameDao\$*.*",
+        "**/*\$DefaultImpls.*",
+        "**/IGameRepository.*", "**/IGameUseCase.*",
+        "**/ApiService.*",
+        "**/*\$\$inlined*.*"
     )
     val debugTree = fileTree("${layout.buildDirectory.get()}/intermediates/javac/debug") {
         exclude(fileFilter)
@@ -137,4 +144,6 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.core)
 }

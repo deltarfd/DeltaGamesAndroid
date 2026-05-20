@@ -62,7 +62,8 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         "**/Manifest*.*", "**/*Test*.*", "android/**/*.*",
         "**/*_MembersInjector.*", "**/*Module*.*",
         "**/entity/**", "**/model/**", "**/response/**",
-        "**/databinding/**", "**/android/databinding/**"
+        "**/databinding/**", "**/android/databinding/**",
+        "**/*Activity*.*", "**/*Fragment*.*", "**/*Adapter*.*", "**/*ViewHolder*.*"
     )
     val debugTree = fileTree("${layout.buildDirectory.get()}/intermediates/javac/debug") {
         exclude(fileFilter)
