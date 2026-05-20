@@ -1,5 +1,7 @@
 package com.deltarfd.deltagamesandroid.core.di
 
+import android.content.Context
+import android.util.Log
 import androidx.room.Room
 import com.deltarfd.deltagamesandroid.core.BuildConfig
 import com.deltarfd.deltagamesandroid.core.data.local.GameDatabase
@@ -18,6 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 private const val API_HOST = "api.rawg.io"
+private const val DB_NAME = "DeltaGames_encrypted.db"
 
 val networkModule = module {
     single {
@@ -34,6 +37,7 @@ val networkModule = module {
                 HttpLoggingInterceptor.Level.NONE
             }
         }
+
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .connectTimeout(120, TimeUnit.SECONDS)
@@ -41,6 +45,7 @@ val networkModule = module {
             .certificatePinner(certificatePinner)
             .build()
     }
+
     single {
         Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
@@ -48,28 +53,38 @@ val networkModule = module {
             .client(get())
             .build()
     }
+
     single<ApiService> { get<Retrofit>().create(ApiService::class.java) }
 }
 
 val databaseModule = module {
-    single {
-        // Database encryption using SQLCipher with a randomly generated passphrase
-        // stored securely in Android Keystore (via EncryptedSharedPreferences)
-        val passphrase = DatabasePassphraseProvider.getPassphrase(androidContext())
-        val factory = SupportOpenHelperFactory(passphrase)
-
-        Room.databaseBuilder(
-            androidContext(),
-            GameDatabase::class.java,
-            "DeltaGames_encrypted.db"
-        )
-            .fallbackToDestructiveMigration(false)
-            .openHelperFactory(factory)
-            .build()
-    }
+    single { buildGameDatabase(androidContext()) }
     single { get<GameDatabase>().gameDao() }
 }
 
 val repositoryModule = module {
     single<IGameRepository> { GameRepositoryImpl(get(), get()) }
+}
+
+private fun buildGameDatabase(context: Context): GameDatabase {
+    val passphrase = DatabasePassphraseProvider.getPassphrase(context)
+    val factory = SupportOpenHelperFactory(passphrase)
+
+    fun createDatabase() = Room.databaseBuilder(context, GameDatabase::class.java, DB_NAME)
+        .openHelperFactory(factory)
+        .fallbackToDestructiveMigration(false)
+        .build()
+
+    val db = createDatabase()
+
+    return try {
+        db.openHelper.writableDatabase
+        db
+    } catch (e: net.zetetic.database.sqlcipher.SQLiteNotADatabaseException) {
+        // Only recreate if the file is genuinely incompatible (wrong passphrase / unencrypted)
+        Log.w("CoreModule", "Incompatible database file, recreating.", e)
+        db.close()
+        context.deleteDatabase(DB_NAME)
+        createDatabase()
+    }
 }

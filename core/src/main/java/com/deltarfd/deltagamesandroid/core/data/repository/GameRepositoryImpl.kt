@@ -15,12 +15,16 @@ class GameRepositoryImpl(
     private val gameDao: GameDao
 ) : IGameRepository {
 
+    companion object {
+        private const val DEFAULT_ERROR = "Unknown error"
+    }
+
     override fun getAllGames(page: Int): Flow<Resource<List<Game>>> = flow {
         emit(Resource.Loading())
         try {
             val response = apiService.getGames(page = page)
             val entities = DataMapper.mapResponseToEntities(response.results)
-            if (page == 1) gameDao.insertGames(entities) // only cache page 1
+            if (page == 1) gameDao.upsertGamesPreservingFavorites(entities)
             val games = DataMapper.mapEntitiesToDomain(entities)
             emit(Resource.Success(games))
         } catch (e: Exception) {
@@ -29,11 +33,11 @@ class GameRepositoryImpl(
                     if (localData.isNotEmpty()) {
                         emit(Resource.Success(DataMapper.mapEntitiesToDomain(localData)))
                     } else {
-                        emit(Resource.Error(e.message ?: "Unknown error"))
+                        emit(Resource.Error(e.message ?: DEFAULT_ERROR))
                     }
                 }
             } else {
-                emit(Resource.Error(e.message ?: "Unknown error"))
+                emit(Resource.Error(e.message ?: DEFAULT_ERROR))
             }
         }
     }
@@ -46,14 +50,13 @@ class GameRepositoryImpl(
             val games = DataMapper.mapEntitiesToDomain(entities)
             emit(Resource.Success(games))
         } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "Unknown error"))
+            emit(Resource.Error(e.message ?: DEFAULT_ERROR))
         }
     }
 
     override fun getGameDetail(id: Int): Flow<Resource<Game>> = flow {
         emit(Resource.Loading())
         try {
-            // Check local first
             val localGame = gameDao.getGameById(id)
             localGame.collect { entity ->
                 val isFavorite = entity?.isFavorite ?: false
@@ -66,12 +69,12 @@ class GameRepositoryImpl(
                     if (entity != null) {
                         emit(Resource.Success(DataMapper.mapEntityToDomain(entity)))
                     } else {
-                        emit(Resource.Error(e.message ?: "Unknown error"))
+                        emit(Resource.Error(e.message ?: DEFAULT_ERROR))
                     }
                 }
             }
         } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "Unknown error"))
+            emit(Resource.Error(e.message ?: DEFAULT_ERROR))
         }
     }
 
@@ -93,11 +96,11 @@ class GameRepositoryImpl(
                     if (localData.isNotEmpty()) {
                         emit(Resource.Success(DataMapper.mapEntitiesToDomain(localData)))
                     } else {
-                        emit(Resource.Error(e.message ?: "Unknown error"))
+                        emit(Resource.Error(e.message ?: DEFAULT_ERROR))
                     }
                 }
             } else {
-                emit(Resource.Error(e.message ?: "Unknown error"))
+                emit(Resource.Error(e.message ?: DEFAULT_ERROR))
             }
         }
     }
