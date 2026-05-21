@@ -1,6 +1,5 @@
 package com.deltarfd.deltagamesandroid.presentation.detail
 
-import app.cash.turbine.test
 import com.deltarfd.deltagamesandroid.core.domain.model.Game
 import com.deltarfd.deltagamesandroid.core.domain.usecase.IGameUseCase
 import com.deltarfd.deltagamesandroid.core.utils.Resource

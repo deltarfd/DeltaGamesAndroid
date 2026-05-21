@@ -23,8 +23,8 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: HomeViewModel by viewModel()
-    private lateinit var gamesAdapter: GamesAdapter
-    private lateinit var trendingAdapter: TrendingAdapter
+    private var gamesAdapter: GamesAdapter? = null
+    private var trendingAdapter: TrendingAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,7 +64,7 @@ class HomeFragment : Fragment() {
                     is Resource.Loading -> showTrendingLoading(true)
                     is Resource.Success -> {
                         showTrendingLoading(false)
-                        trendingAdapter.submitList(resource.data)
+                        trendingAdapter?.submitList(resource.data)
                     }
                     is Resource.Error -> showTrendingLoading(false)
                 }
@@ -78,7 +78,7 @@ class HomeFragment : Fragment() {
                     is Resource.Success -> {
                         showGamesLoading(false)
                         binding.tvError.visibility = View.GONE
-                        gamesAdapter.submitList(resource.data)
+                        gamesAdapter?.submitList(resource.data)
                     }
                     is Resource.Error -> {
                         showGamesLoading(false)
@@ -146,6 +146,10 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvGames.adapter = null
+        binding.rvTrending.adapter = null
+        gamesAdapter = null
+        trendingAdapter = null
         _binding = null
     }
 }

@@ -84,32 +84,39 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         )
     }
     val fileFilter = listOf(
-        "**/R.class", "**/R$*.class", "**/BuildConfig.*",
-        "**/Manifest*.*", "**/*Test*.*", "android/**/*.*",
-        "**/*_MembersInjector.*", "**/*Module*.*", "**/*_Impl*.*",
-        "**/entity/**", "**/model/**", "**/response/**",
-        "**/*Activity*.*", "**/*Fragment*.*", "**/*Adapter*.*", "**/*ViewHolder*.*",
+        // Android generated
+        "**/R.class", "**/R$*.class", "**/BuildConfig.*", "**/Manifest*.*",
         "**/databinding/**", "**/android/databinding/**",
+        // Kotlin compiler generated
+        $$"**/*$DefaultImpls.*", $$$"**/*$$inlined*.*",
+        // DI & framework (not unit-testable)
+        "**/*Module*.*", "**/*_MembersInjector.*", "**/*_Impl*.*",
+        // UI layer
+        "**/*Activity*.*", "**/*Fragment*.*", "**/*Adapter*.*", "**/*ViewHolder*.*",
+        // Data classes (no logic)
+        "**/entity/**", "**/model/**", "**/response/**",
+        // Interfaces & abstract (Room/Retrofit generates impl)
+        "**/GameDatabase.*", "**/GameDao.*", "**/GameDao$*.*",
+        "**/ApiService.*", "**/IGameRepository.*", "**/IGameUseCase.*",
+        // Security (requires real device)
         "**/DatabasePassphraseProvider.*",
-        "**/GameDatabase.*", "**/GameDao.*", "**/GameDao\$*.*",
-        "**/*\$DefaultImpls.*",
-        "**/IGameRepository.*", "**/IGameUseCase.*",
-        "**/ApiService.*",
-        "**/*\$\$inlined*.*"
+        // Test classes
+        "**/*Test*.*", "android/**/*.*"
     )
-    val debugTree = fileTree("${layout.buildDirectory.get()}/intermediates/javac/debug") {
+    val buildDir = layout.buildDirectory.get()
+    val debugTree = fileTree("$buildDir/intermediates/javac/debug") {
         exclude(fileFilter)
     }
-    val kotlinDebugTree = fileTree("${layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
+    val kotlinDebugTree = fileTree("$buildDir/tmp/kotlin-classes/debug") {
         exclude(fileFilter)
     }
-    val modernKotlinDebugTree = fileTree("${layout.buildDirectory.get()}/intermediates/built_in_kotlinc/debug/compileDebugKotlin/classes") {
+    val modernKotlinDebugTree = fileTree("$buildDir/intermediates/built_in_kotlinc/debug/compileDebugKotlin/classes") {
         exclude(fileFilter)
     }
     sourceDirectories.setFrom(files("src/main/java", "src/main/kotlin"))
     classDirectories.setFrom(files(debugTree, kotlinDebugTree, modernKotlinDebugTree))
     executionData.setFrom(
-        fileTree(layout.buildDirectory.get()) {
+        fileTree(buildDir) {
             include("jacoco/testDebugUnitTest.exec", "outputs/unit_test_code_coverage/debugUnitTest/*.exec")
         }
     )

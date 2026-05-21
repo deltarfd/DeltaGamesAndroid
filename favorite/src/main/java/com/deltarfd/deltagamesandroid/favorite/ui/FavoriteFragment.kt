@@ -23,7 +23,7 @@ class FavoriteFragment : Fragment() {
 
     // Lazy — Koin resolves after loadKoinModules in onCreate
     private val viewModel: FavoriteViewModel by viewModel()
-    private lateinit var favoriteAdapter: FavoriteAdapter
+    private var favoriteAdapter: FavoriteAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +56,7 @@ class FavoriteFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.favoriteGames.collect { games ->
-                favoriteAdapter.submitList(games)
+                favoriteAdapter?.submitList(games)
                 if (games.isEmpty()) {
                     binding.layoutEmpty.visibility = View.VISIBLE
                     binding.rvFavorites.visibility = View.GONE
@@ -78,6 +78,8 @@ class FavoriteFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvFavorites.adapter = null
+        favoriteAdapter = null
         _binding = null
     }
 }

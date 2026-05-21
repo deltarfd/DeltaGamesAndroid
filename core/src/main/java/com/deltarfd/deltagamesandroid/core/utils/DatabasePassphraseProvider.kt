@@ -1,5 +1,6 @@
 package com.deltarfd.deltagamesandroid.core.utils
 
+import android.app.KeyguardManager
 import android.content.Context
 import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
@@ -23,7 +24,8 @@ import javax.crypto.spec.GCMParameterSpec
  *
  * Security properties:
  * - The AES key never leaves the Keystore (hardware-backed via TEE/StrongBox)
- * - User authentication (device credential) required for key access
+ * - User authentication required when device has a secure lock screen
+ * - Falls back to non-authenticated (but still hardware-backed) key on devices without lock screen
  * - The passphrase is unique per device/install — generated via [SecureRandom]
  * - If the key is invalidated (lock screen change, etc.), gracefully regenerates
  */
@@ -48,8 +50,6 @@ object DatabasePassphraseProvider {
             try {
                 return decryptPassphrase(encryptedValue)
             } catch (e: Exception) {
-                // Keystore key was invalidated (lock screen change, backup/restore, etc.)
-                // Clear stale data and fall through to generate a new passphrase.
                 Log.w(TAG, "Failed to decrypt stored passphrase, regenerating.", e)
                 prefs.edit { remove(KEY_DB_PASSPHRASE) }
                 deleteKeystoreKey()
@@ -59,13 +59,13 @@ object DatabasePassphraseProvider {
         val passphrase = ByteArray(PASSPHRASE_LENGTH_BYTES).also {
             SecureRandom().nextBytes(it)
         }
-        val encrypted = encryptPassphrase(passphrase)
+        val encrypted = encryptPassphrase(context, passphrase)
         prefs.edit { putString(KEY_DB_PASSPHRASE, encrypted) }
         return passphrase
     }
 
-    private fun encryptPassphrase(passphrase: ByteArray): String {
-        val secretKey = getOrCreateSecretKey()
+    private fun encryptPassphrase(context: Context, passphrase: ByteArray): String {
+        val secretKey = getOrCreateSecretKey(context)
         val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.ENCRYPT_MODE, secretKey)
         val iv = cipher.iv
@@ -78,27 +78,43 @@ object DatabasePassphraseProvider {
         val combined = Base64.decode(encryptedValue, Base64.NO_WRAP)
         val iv = combined.copyOfRange(0, GCM_IV_LENGTH_BYTES)
         val ciphertext = combined.copyOfRange(GCM_IV_LENGTH_BYTES, combined.size)
-        val secretKey = getOrCreateSecretKey()
+        val secretKey = getExistingSecretKey()
+            ?: throw IllegalStateException("Keystore key not found for decryption")
         val cipher = Cipher.getInstance(TRANSFORMATION)
         val spec = GCMParameterSpec(GCM_TAG_LENGTH_BITS, iv)
         cipher.init(Cipher.DECRYPT_MODE, secretKey, spec)
         return cipher.doFinal(ciphertext)
     }
 
-    private fun getOrCreateSecretKey(): SecretKey {
+    private fun getExistingSecretKey(): SecretKey? {
         val keyStore = KeyStore.getInstance(ANDROID_KEYSTORE).apply { load(null) }
-        val existing = keyStore.getKey(KEYSTORE_ALIAS, null) as? SecretKey
-        if (existing != null) return existing
+        return keyStore.getKey(KEYSTORE_ALIAS, null) as? SecretKey
+    }
+
+    private fun getOrCreateSecretKey(context: Context): SecretKey {
+        getExistingSecretKey()?.let { return it }
 
         val keyGenerator = KeyGenerator.getInstance(
             KeyProperties.KEY_ALGORITHM_AES,
             ANDROID_KEYSTORE
         )
-        keyGenerator.init(buildKeySpec())
+
+        val keyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        val keySpec = if (keyguardManager.isDeviceSecure) {
+            buildAuthenticatedKeySpec()
+        } else {
+            buildUnauthenticatedKeySpec()
+        }
+
+        keyGenerator.init(keySpec)
         return keyGenerator.generateKey()
     }
 
-    private fun buildKeySpec(): KeyGenParameterSpec {
+    /**
+     * Key spec for devices WITH a secure lock screen.
+     * Requires user authentication — satisfies SonarQube S6288.
+     */
+    private fun buildAuthenticatedKeySpec(): KeyGenParameterSpec {
         val builder = KeyGenParameterSpec.Builder(
             KEYSTORE_ALIAS,
             KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
@@ -120,6 +136,21 @@ object DatabasePassphraseProvider {
 
         return builder.build()
     }
+
+    /**
+     * Fallback key spec for devices WITHOUT a secure lock screen.
+     * Still hardware-backed via Keystore, but no user authentication required.
+     */
+    @Suppress("kotlin:S6288")
+    private fun buildUnauthenticatedKeySpec(): KeyGenParameterSpec =
+        KeyGenParameterSpec.Builder(
+            KEYSTORE_ALIAS,
+            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+        )
+            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+            .setKeySize(256)
+            .build()
 
     private fun deleteKeystoreKey() {
         try {

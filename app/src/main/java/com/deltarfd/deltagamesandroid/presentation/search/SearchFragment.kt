@@ -24,7 +24,7 @@ class SearchFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: SearchViewModel by viewModel()
-    private lateinit var searchAdapter: GamesAdapter
+    private var searchAdapter: GamesAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,10 +42,11 @@ class SearchFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        searchAdapter = GamesAdapter { game -> navigateToDetail(game) }
+        val adapter = GamesAdapter { game -> navigateToDetail(game) }
+        searchAdapter = adapter
         val layoutManager = GridLayoutManager(context, 2)
         binding.rvSearchResults.apply {
-            adapter = searchAdapter
+            this.adapter = adapter
             this.layoutManager = layoutManager
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -88,7 +89,7 @@ class SearchFragment : Fragment() {
                     is Resource.Success -> {
                         binding.progressBar.visibility = View.GONE
                         val data = resource.data ?: emptyList()
-                        searchAdapter.submitList(data)
+                        searchAdapter?.submitList(data)
                         val hasQuery = binding.etSearch.text.isNotEmpty()
                         if (data.isNotEmpty()) {
                             binding.rvSearchResults.visibility = View.VISIBLE
@@ -133,6 +134,8 @@ class SearchFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        binding.rvSearchResults.adapter = null
+        searchAdapter = null
         _binding = null
     }
 }
