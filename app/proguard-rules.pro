@@ -39,5 +39,5 @@
 -keep class com.deltarfd.deltagamesandroid.core.domain.model.** { *; }
 
 # Keep Kotlin stdlib classes required by dynamic feature modules
--keep,allowobfuscation class kotlin.** { *; }
--keep,allowobfuscation class kotlinx.** { *; }
+-keep class kotlin.LazyKt { *; }
+-keep class kotlin.jvm.internal.Intrinsics { *; }
