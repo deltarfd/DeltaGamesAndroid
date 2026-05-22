@@ -37,3 +37,7 @@
 -keep class com.deltarfd.deltagamesandroid.core.data.remote.response.** { *; }
 -keep class com.deltarfd.deltagamesandroid.core.data.local.entity.** { *; }
 -keep class com.deltarfd.deltagamesandroid.core.domain.model.** { *; }
+
+# Keep Kotlin stdlib classes required by dynamic feature modules
+-keep,allowobfuscation class kotlin.** { *; }
+-keep,allowobfuscation class kotlinx.** { *; }

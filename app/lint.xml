@@ -48,6 +48,9 @@
     <!-- Performance suggestions (cosmetic) -->
     <issue id="UnusedAttribute" severity="ignore" />
 
+    <!-- ProGuard / R8 -->
+    <issue id="ShrinkerUnresolvedReference" severity="ignore" />
+
     <!-- Suppress unknown issue id warnings on lint.xml itself -->
     <issue id="UnknownIssueId" severity="ignore" />
 </lint>
