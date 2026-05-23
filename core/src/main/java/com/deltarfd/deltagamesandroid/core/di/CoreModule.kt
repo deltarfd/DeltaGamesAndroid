@@ -1,7 +1,6 @@
 package com.deltarfd.deltagamesandroid.core.di
 
 import android.content.Context
-import android.util.Log
 import androidx.room.Room
 import com.deltarfd.deltagamesandroid.core.BuildConfig
 import com.deltarfd.deltagamesandroid.core.data.local.GameDatabase
@@ -70,21 +69,8 @@ private fun buildGameDatabase(context: Context): GameDatabase {
     val passphrase = DatabasePassphraseProvider.getPassphrase(context)
     val factory = SupportOpenHelperFactory(passphrase)
 
-    fun createDatabase() = Room.databaseBuilder(context, GameDatabase::class.java, DB_NAME)
+    return Room.databaseBuilder(context, GameDatabase::class.java, DB_NAME)
         .openHelperFactory(factory)
         .fallbackToDestructiveMigration(false)
         .build()
-
-    val db = createDatabase()
-
-    return try {
-        db.openHelper.writableDatabase
-        db
-    } catch (e: net.zetetic.database.sqlcipher.SQLiteNotADatabaseException) {
-        // Only recreate if the file is genuinely incompatible (wrong passphrase / unencrypted)
-        Log.w("CoreModule", "Incompatible database file, recreating.", e)
-        db.close()
-        context.deleteDatabase(DB_NAME)
-        createDatabase()
-    }
 }
