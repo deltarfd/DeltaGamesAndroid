@@ -1,7 +1,6 @@
 package com.deltarfd.deltagamesandroid.presentation.detail
 
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -32,14 +31,26 @@ class DetailActivity : AppCompatActivity() {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val gameId = intent.getIntExtra(EXTRA_GAME_ID, -1)
-
+        setupEdgeToEdge()
         setupButtons()
         observeDetail()
         observeFavoriteState()
 
+        val gameId = intent.getIntExtra(EXTRA_GAME_ID, -1)
         if (gameId != -1) {
             viewModel.loadDetail(gameId)
+        }
+    }
+
+    private fun setupEdgeToEdge() {
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val statusBar = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.statusBars()).top
+            binding.toolbar.setPadding(0, statusBar, 0, 0)
+            val toolbarHeight = resources.getDimensionPixelSize(
+                androidx.appcompat.R.dimen.abc_action_bar_default_height_material
+            )
+            binding.collapsingToolbar.minimumHeight = toolbarHeight + statusBar
+            insets
         }
     }
 
@@ -140,27 +151,6 @@ class DetailActivity : AppCompatActivity() {
     private fun showLoading(loading: Boolean) {
         binding.progressBar.visibility = if (loading) View.VISIBLE else View.GONE
         binding.contentLayout.visibility = if (loading) View.INVISIBLE else View.VISIBLE
-    }
-
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        val statusBarHeight = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.decorView.rootWindowInsets
-                ?.getInsets(android.view.WindowInsets.Type.statusBars())
-                ?.top ?: 0
-        } else {
-            @Suppress("DEPRECATION")
-            window.decorView.rootWindowInsets?.systemWindowInsetTop ?: 0
-        }
-        val margin16 = (16 * resources.displayMetrics.density).toInt()
-        (binding.btnBack.layoutParams as? android.widget.FrameLayout.LayoutParams)?.apply {
-            topMargin = statusBarHeight + margin16
-            leftMargin = margin16
-        }
-        (binding.btnFavoriteIcon.layoutParams as? android.widget.FrameLayout.LayoutParams)?.apply {
-            topMargin = statusBarHeight + margin16
-            rightMargin = margin16
-        }
     }
 
     companion object {

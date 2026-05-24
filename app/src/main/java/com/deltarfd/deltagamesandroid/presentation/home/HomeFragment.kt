@@ -36,10 +36,20 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupEdgeToEdge()
         setupAdapters()
         observeViewModel()
         setupSwipeRefresh()
         setupScrollPagination()
+    }
+
+    private fun setupEdgeToEdge() {
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.swipeRefresh) { _, insets ->
+            val statusBar = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.statusBars()).top
+            binding.scrollView.setPadding(0, statusBar, 0, 0)
+            binding.scrollView.clipToPadding = false
+            insets
+        }
     }
 
     private fun setupAdapters() {

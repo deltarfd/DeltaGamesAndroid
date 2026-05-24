@@ -36,9 +36,18 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupEdgeToEdge()
         setupRecyclerView()
         setupSearch()
         observeViewModel()
+    }
+
+    private fun setupEdgeToEdge() {
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val statusBar = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.statusBars()).top
+            v.setPadding(v.paddingLeft, statusBar, v.paddingRight, v.paddingBottom)
+            insets
+        }
     }
 
     private fun setupRecyclerView() {

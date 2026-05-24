@@ -33,6 +33,7 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupEdgeToEdge()
 
         val prefs = requireContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
         val savedCaption = prefs.getString(KEY_CAPTION, DEFAULT_CAPTION) ?: DEFAULT_CAPTION
@@ -120,6 +121,14 @@ class ProfileFragment : Fragment() {
             chip(chipSystem,      lang == "system")
             chip(chipEnglish,     lang == "english")
             chip(chipIndonesian,  lang == "indonesian")
+        }
+    }
+
+    private fun setupEdgeToEdge() {
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val statusBar = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.statusBars()).top
+            v.setPadding(v.paddingLeft, statusBar, v.paddingRight, v.paddingBottom)
+            insets
         }
     }
 

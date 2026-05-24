@@ -1,71 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
-    android:orientation="vertical">
+    android:background="@color/colorBackground">
 
-    <!-- Hero Image Section with floating buttons -->
-    <FrameLayout
-        android:id="@+id/heroLayout"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="290dp">
+        android:layout_height="wrap_content"
+        android:background="@color/colorBackground">
 
-        <ImageView
-            android:id="@+id/ivGameCover"
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/game_cover_description"
-            android:scaleType="centerCrop" />
+            android:layout_height="290dp"
+            app:contentScrim="@color/colorBackground"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:scrimAnimationDuration="200"
+            app:titleEnabled="false">
 
-        <!-- Bottom gradient -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/bg_gradient_overlay" />
+            <!-- Hero Image -->
+            <ImageView
+                android:id="@+id/ivGameCover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/game_cover_description"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.5" />
 
-        <!-- Floating Back Button -->
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="16dp"
-            android:background="@drawable/bg_circle_dark"
-            android:contentDescription="Back"
-            android:padding="8dp"
-            android:src="@drawable/ic_arrow_back" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_gradient_overlay"
+                app:layout_collapseMode="parallax" />
 
-        <!-- Floating Favorite Button -->
-        <ImageButton
-            android:id="@+id/btnFavoriteIcon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="top|end"
-            android:layout_margin="16dp"
-            android:background="@drawable/bg_circle_white"
-            android:contentDescription="Favorite"
-            android:padding="8dp"
-            android:src="@drawable/ic_favorite_border" />
+            <!-- Toolbar (becomes visible when collapsed) -->
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:minHeight="?attr/actionBarSize"
+                app:contentInsetStart="0dp"
+                app:contentInsetEnd="0dp"
+                app:layout_collapseMode="pin">
 
-        <!-- Loading inside hero -->
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:indeterminateTint="@color/colorPrimary"
-            android:visibility="gone" />
-    </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageButton
+                        android:id="@+id/btnBack"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="start|center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_circle_dark"
+                        android:contentDescription="Back"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_arrow_back" />
+
+                    <ImageButton
+                        android:id="@+id/btnFavoriteIcon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/bg_circle_white"
+                        android:contentDescription="Favorite"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_favorite_border" />
+
+                </FrameLayout>
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <!-- Scrollable Content -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/contentLayout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:overScrollMode="never"
-        android:visibility="invisible">
+        android:visibility="invisible"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -115,7 +138,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Released -->
             <TextView
                 android:id="@+id/tvReleaseDate"
                 android:layout_width="wrap_content"
@@ -124,7 +146,6 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="13sp" />
 
-            <!-- Platforms -->
             <TextView
                 android:id="@+id/tvPlatforms"
                 android:layout_width="match_parent"
@@ -133,7 +154,6 @@
                 android:textColor="@color/colorTextSecondary"
                 android:textSize="13sp" />
 
-            <!-- Genres (gold colored tags) -->
             <TextView
                 android:id="@+id/tvGenres"
                 android:layout_width="wrap_content"
@@ -149,7 +169,7 @@
                 android:layout_marginVertical="12dp"
                 android:background="@color/divider" />
 
-            <!-- Info Row: Playtime + Metacritic -->
+            <!-- Developer / Publisher / Metacritic -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -205,8 +225,8 @@
                     android:id="@+id/layoutMetacritic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -227,7 +247,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Avg playtime -->
+            <!-- Playtime -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -275,7 +295,6 @@
                 android:textColor="@color/colorTextSecondary"
                 android:textSize="14sp" />
 
-            <!-- Hidden fields kept for ViewModel compatibility -->
             <TextView
                 android:id="@+id/tvMetacriticLabel"
                 android:layout_width="0dp"
@@ -285,4 +304,13 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-</LinearLayout>
+    <!-- Loading indicator -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/colorPrimary"
+        android:visibility="gone" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
