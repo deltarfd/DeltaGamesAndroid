@@ -61,7 +61,7 @@ class DetailActivityTest {
             scenario.onActivity { activity ->
                 val binding = getBinding(activity)
                 assertEquals(android.view.View.VISIBLE, binding.progressBar.visibility)
-                assertEquals(android.view.View.INVISIBLE, binding.contentLayout.visibility)
+                assertEquals(android.view.View.GONE, binding.contentLayout.visibility)
             }
         }
     }
