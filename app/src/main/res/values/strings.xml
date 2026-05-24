@@ -15,7 +15,7 @@
     <string name="new_and_trending">New &amp; Trending</string>
     <string name="explore_games">Explore The Games</string>
     <string name="search_title">🔍 Search Games</string>
-    <string name="favorite_title">❤️ Favorite Games</string>
+    <string name="favorite_title">Favorite Games</string>
 
     <!-- Detail -->
     <string name="rating_label">Rating</string>

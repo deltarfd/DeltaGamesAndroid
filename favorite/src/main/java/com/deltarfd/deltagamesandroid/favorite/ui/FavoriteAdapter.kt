@@ -1,22 +1,21 @@
 package com.deltarfd.deltagamesandroid.favorite.ui
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.deltarfd.deltagamesandroid.favorite.databinding.ItemFavoriteBinding
+import com.deltarfd.deltagamesandroid.databinding.ItemGameBinding
 import com.deltarfd.deltagamesandroid.presentation.model.GameItem
+import com.deltarfd.deltagamesandroid.util.loadImage
 
 class FavoriteAdapter(
     private val onItemClick: (GameItem) -> Unit
 ) : ListAdapter<GameItem, FavoriteAdapter.FavoriteViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteViewHolder {
-        val binding = ItemFavoriteBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemGameBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return FavoriteViewHolder(binding)
     }
 
@@ -24,7 +23,7 @@ class FavoriteAdapter(
         holder.bind(getItem(position))
     }
 
-    inner class FavoriteViewHolder(private val binding: ItemFavoriteBinding) :
+    inner class FavoriteViewHolder(private val binding: ItemGameBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(game: GameItem) {
@@ -34,17 +33,17 @@ class FavoriteAdapter(
 
                 val genre = game.genres.split(",").firstOrNull()?.trim() ?: ""
                 tvGenre.text = genre
-                tvGenre.visibility = if (genre.isNotEmpty()) View.VISIBLE else View.GONE
+                tvGenre.isVisible = genre.isNotEmpty()
+
+                val platform = com.deltarfd.deltagamesandroid.presentation.home.TrendingAdapter.formatPlatforms(game.platforms)
+                tvPlatform.text = platform
+                tvPlatform.isVisible = platform.isNotEmpty()
 
                 val date = game.releaseDate
                 tvReleaseDate.text = date
-                tvReleaseDate.visibility = if (date.isNotEmpty()) View.VISIBLE else View.GONE
+                tvReleaseDate.isVisible = date.isNotEmpty()
 
-                Glide.with(itemView.context)
-                    .load(game.coverUrl)
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .centerCrop()
-                    .into(ivGameCover)
+                ivGameCover.loadImage(game.coverUrl)
 
                 root.setOnClickListener { onItemClick(game) }
             }

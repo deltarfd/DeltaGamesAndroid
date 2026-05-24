@@ -2,9 +2,9 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/DeltaGames.Card"
-    android:layout_width="260dp"
-    android:layout_height="200dp"
-    android:layout_marginEnd="12dp">
+    android:layout_width="match_parent"
+    android:layout_height="280dp"
+    android:layout_marginEnd="16dp">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -30,8 +30,8 @@
             android:layout_gravity="top"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingHorizontal="10dp"
-            android:paddingTop="8dp">
+            android:paddingHorizontal="12dp"
+            android:paddingTop="10dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -40,8 +40,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
                     android:importantForAccessibility="no"
                     android:src="@drawable/ic_star"
                     app:tint="@color/colorRating" />
@@ -50,9 +50,13 @@
                     android:id="@+id/tvRating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="3dp"
+                    android:layout_marginStart="4dp"
+                    android:shadowColor="@color/black"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="3"
                     android:textColor="@color/colorRating"
-                    android:textSize="11sp"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -65,18 +69,22 @@
                 android:id="@+id/tvDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:shadowColor="@color/black"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="3"
                 android:textColor="@color/white"
-                android:textSize="10sp" />
+                android:textSize="12sp" />
         </LinearLayout>
 
-        <!-- Name + Genre + Platform at bottom (matching iOS) -->
+        <!-- Name + Genre + Platform at bottom -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:orientation="vertical"
-            android:paddingHorizontal="10dp"
-            android:paddingBottom="10dp">
+            android:paddingHorizontal="12dp"
+            android:paddingBottom="14dp">
 
             <TextView
                 android:id="@+id/tvGameName"
@@ -84,11 +92,14 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:shadowColor="@color/black"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="3"
                 android:textColor="@color/white"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <!-- Genre (e.g. "Action, RPG") -->
             <TextView
                 android:id="@+id/tvGenre"
                 android:layout_width="match_parent"
@@ -96,19 +107,26 @@
                 android:layout_marginTop="2dp"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:shadowColor="@color/black"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="3"
                 android:textColor="@color/colorTextSecondary"
-                android:textSize="11sp" />
+                android:textSize="12sp" />
 
-            <!-- Platform (e.g. "PC, PlayStation, Xbox") -->
             <TextView
                 android:id="@+id/tvPlatform"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
+                android:layout_marginTop="2dp"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:shadowColor="@color/black"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="3"
                 android:textColor="@color/colorPrimary"
-                android:textSize="10sp" />
+                android:textSize="11sp" />
         </LinearLayout>
 
     </FrameLayout>

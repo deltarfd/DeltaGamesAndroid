@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="250dp"
     android:layout_margin="6dp"
     app:cardBackgroundColor="@color/colorCard"
     app:cardCornerRadius="12dp"
@@ -10,7 +10,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/ivGameCover"
@@ -24,14 +24,14 @@
             android:layout_height="match_parent"
             android:background="@drawable/bg_gradient_overlay" />
 
-        <!-- Rating + Date at top -->
+        <!-- Rating + Date row at top -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingHorizontal="8dp"
+            android:paddingHorizontal="10dp"
             android:paddingTop="8dp">
 
             <LinearLayout
@@ -41,8 +41,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
                     android:importantForAccessibility="no"
                     android:src="@drawable/ic_star"
                     app:tint="@color/colorRating" />
@@ -52,8 +52,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="3dp"
+                    android:shadowColor="@color/black"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="3"
                     android:textColor="@color/colorRating"
-                    android:textSize="11sp"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -62,33 +66,23 @@
                 android:layout_height="1dp"
                 android:layout_weight="1" />
 
-            <TextView
-                android:id="@+id/tvReleaseDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="10sp" />
+            <!-- Favorite heart indicator -->
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_favorite_filled"
+                app:tint="@color/colorFavorite" />
         </LinearLayout>
 
-        <!-- Favorite heart indicator top-left corner decoration -->
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="top|start"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="30dp"
-            android:importantForAccessibility="no"
-            android:src="@drawable/ic_favorite_filled"
-            app:tint="@color/colorFavorite" />
-
-        <!-- Name + Genre at bottom -->
+        <!-- Game info at bottom -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:orientation="vertical"
-            android:paddingHorizontal="8dp"
-            android:paddingBottom="8dp">
+            android:paddingHorizontal="10dp"
+            android:paddingBottom="10dp">
 
             <TextView
                 android:id="@+id/tvGameName"
@@ -96,8 +90,12 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
+                android:shadowColor="@color/black"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="3"
                 android:textColor="@color/white"
-                android:textSize="13sp"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -107,8 +105,26 @@
                 android:layout_marginTop="2dp"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:shadowColor="@color/black"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="3"
                 android:textColor="@color/colorTextSecondary"
                 android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/tvReleaseDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:shadowColor="@color/black"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="3"
+                android:textColor="@color/colorPrimary"
+                android:textSize="10sp" />
         </LinearLayout>
     </FrameLayout>
 

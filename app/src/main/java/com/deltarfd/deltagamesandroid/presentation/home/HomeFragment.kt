@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -57,6 +58,7 @@ class HomeFragment : Fragment() {
         binding.rvTrending.apply {
             adapter = trendingAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            androidx.recyclerview.widget.PagerSnapHelper().attachToRecyclerView(this)
         }
 
         gamesAdapter = GamesAdapter { game -> navigateToDetail(game) }
@@ -87,12 +89,12 @@ class HomeFragment : Fragment() {
                     is Resource.Loading -> showGamesLoading(true)
                     is Resource.Success -> {
                         showGamesLoading(false)
-                        binding.tvError.visibility = View.GONE
+                        binding.tvError.isVisible = false
                         gamesAdapter?.submitList(resource.data)
                     }
                     is Resource.Error -> {
                         showGamesLoading(false)
-                        binding.tvError.visibility = View.VISIBLE
+                        binding.tvError.isVisible = true
                         binding.tvError.text = resource.message
                     }
                 }
@@ -102,7 +104,7 @@ class HomeFragment : Fragment() {
         // Show a small spinner at the bottom when loading more pages
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isLoadingMore.collect { loading ->
-                binding.progressLoadMore.visibility = if (loading) View.VISIBLE else View.GONE
+                binding.progressLoadMore.isVisible = loading
             }
         }
     }
@@ -132,18 +134,18 @@ class HomeFragment : Fragment() {
 
     private fun showTrendingLoading(loading: Boolean) {
         binding.shimmerTrending.apply {
-            if (loading) { visibility = View.VISIBLE; startShimmer() }
-            else { stopShimmer(); visibility = View.GONE }
+            isVisible = loading
+            if (loading) startShimmer() else stopShimmer()
         }
-        binding.rvTrending.visibility = if (loading) View.GONE else View.VISIBLE
+        binding.rvTrending.isVisible = !loading
     }
 
     private fun showGamesLoading(loading: Boolean) {
         binding.shimmerGames.apply {
-            if (loading) { visibility = View.VISIBLE; startShimmer() }
-            else { stopShimmer(); visibility = View.GONE }
+            isVisible = loading
+            if (loading) startShimmer() else stopShimmer()
         }
-        binding.rvGames.visibility = if (loading) View.GONE else View.VISIBLE
+        binding.rvGames.isVisible = !loading
     }
 
     private fun navigateToDetail(game: GameItem) {

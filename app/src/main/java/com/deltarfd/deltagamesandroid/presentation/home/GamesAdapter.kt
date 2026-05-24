@@ -1,16 +1,14 @@
 package com.deltarfd.deltagamesandroid.presentation.home
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.deltarfd.deltagamesandroid.R
 import com.deltarfd.deltagamesandroid.databinding.ItemGameBinding
 import com.deltarfd.deltagamesandroid.presentation.model.GameItem
+import com.deltarfd.deltagamesandroid.util.loadImage
 
 class GamesAdapter(
     private val onItemClick: (GameItem) -> Unit
@@ -35,23 +33,17 @@ class GamesAdapter(
 
                 val genre = game.genres.split(",").firstOrNull()?.trim() ?: ""
                 tvGenre.text = genre
-                tvGenre.visibility = if (genre.isNotEmpty()) View.VISIBLE else View.GONE
+                tvGenre.isVisible = genre.isNotEmpty()
 
                 val platform = TrendingAdapter.formatPlatforms(game.platforms)
                 tvPlatform.text = platform
-                tvPlatform.visibility = if (platform.isNotEmpty()) View.VISIBLE else View.GONE
+                tvPlatform.isVisible = platform.isNotEmpty()
 
                 val date = game.releaseDate
                 tvReleaseDate.text = date
-                tvReleaseDate.visibility = if (date.isNotEmpty()) View.VISIBLE else View.GONE
+                tvReleaseDate.isVisible = date.isNotEmpty()
 
-                Glide.with(itemView.context)
-                    .load(game.coverUrl)
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .placeholder(R.drawable.placeholder_game)
-                    .error(R.drawable.placeholder_game)
-                    .centerCrop()
-                    .into(ivGameCover)
+                ivGameCover.loadImage(game.coverUrl)
 
                 root.setOnClickListener { onItemClick(game) }
             }

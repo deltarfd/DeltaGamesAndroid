@@ -2,17 +2,16 @@ package com.deltarfd.deltagamesandroid.presentation.detail
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.deltarfd.deltagamesandroid.R
 import com.deltarfd.deltagamesandroid.core.utils.Resource
 import com.deltarfd.deltagamesandroid.databinding.ActivityDetailBinding
 import com.deltarfd.deltagamesandroid.presentation.model.GameItem
+import com.deltarfd.deltagamesandroid.util.loadImage
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -110,12 +109,7 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun bindGameDetail(game: GameItem) {
-        Glide.with(this)
-            .load(game.coverUrl)
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .centerCrop()
-            .placeholder(R.drawable.placeholder_game)
-            .into(binding.ivGameCover)
+        binding.ivGameCover.loadImage(game.coverUrl)
 
         with(binding) {
             tvGameName.text    = game.name
@@ -132,9 +126,9 @@ class DetailActivity : AppCompatActivity() {
 
             if (game.metacritic > 0) {
                 tvMetacritic.text = game.metacritic.toString()
-                layoutMetacritic.visibility = View.VISIBLE
+                layoutMetacritic.isVisible = true
             } else {
-                layoutMetacritic.visibility = View.GONE
+                layoutMetacritic.isVisible = false
             }
         }
     }
@@ -149,8 +143,8 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun showLoading(loading: Boolean) {
-        binding.progressBar.visibility = if (loading) View.VISIBLE else View.GONE
-        binding.contentLayout.visibility = if (loading) View.INVISIBLE else View.VISIBLE
+        binding.progressBar.isVisible = loading
+        binding.contentLayout.isVisible = !loading
     }
 
     companion object {

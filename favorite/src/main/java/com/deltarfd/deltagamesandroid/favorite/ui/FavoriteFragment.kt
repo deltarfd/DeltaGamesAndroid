@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -66,13 +67,8 @@ class FavoriteFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.favoriteGames.collect { games ->
                 favoriteAdapter?.submitList(games)
-                if (games.isEmpty()) {
-                    binding.layoutEmpty.visibility = View.VISIBLE
-                    binding.rvFavorites.visibility = View.GONE
-                } else {
-                    binding.layoutEmpty.visibility = View.GONE
-                    binding.rvFavorites.visibility = View.VISIBLE
-                }
+                binding.layoutEmpty.isVisible = games.isEmpty()
+                binding.rvFavorites.isVisible = games.isNotEmpty()
             }
         }
     }

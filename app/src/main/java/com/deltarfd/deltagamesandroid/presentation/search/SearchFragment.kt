@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -90,37 +91,35 @@ class SearchFragment : Fragment() {
             viewModel.searchState.collect { resource ->
                 when (resource) {
                     is Resource.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                        binding.tvEmpty.visibility = View.GONE
-                        binding.layoutNoResults.visibility = View.GONE
-                        binding.rvSearchResults.visibility = View.GONE
+                        binding.progressBar.isVisible = true
+                        binding.tvEmpty.isVisible = false
+                        binding.layoutNoResults.isVisible = false
+                        binding.rvSearchResults.isVisible = false
                     }
                     is Resource.Success -> {
-                        binding.progressBar.visibility = View.GONE
+                        binding.progressBar.isVisible = false
                         val data = resource.data ?: emptyList()
                         searchAdapter?.submitList(data)
                         val hasQuery = binding.etSearch.text.isNotEmpty()
                         if (data.isNotEmpty()) {
-                            binding.rvSearchResults.visibility = View.VISIBLE
-                            binding.tvEmpty.visibility = View.GONE
-                            binding.layoutNoResults.visibility = View.GONE
+                            binding.rvSearchResults.isVisible = true
+                            binding.tvEmpty.isVisible = false
+                            binding.layoutNoResults.isVisible = false
                         } else if (hasQuery) {
-                            // Searched but found nothing
-                            binding.rvSearchResults.visibility = View.GONE
-                            binding.tvEmpty.visibility = View.GONE
-                            binding.layoutNoResults.visibility = View.VISIBLE
+                            binding.rvSearchResults.isVisible = false
+                            binding.tvEmpty.isVisible = false
+                            binding.layoutNoResults.isVisible = true
                         } else {
-                            // No query yet — show placeholder
-                            binding.rvSearchResults.visibility = View.GONE
-                            binding.tvEmpty.visibility = View.VISIBLE
-                            binding.layoutNoResults.visibility = View.GONE
+                            binding.rvSearchResults.isVisible = false
+                            binding.tvEmpty.isVisible = true
+                            binding.layoutNoResults.isVisible = false
                         }
                     }
                     is Resource.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.tvEmpty.visibility = View.GONE
-                        binding.layoutNoResults.visibility = View.VISIBLE
-                        binding.rvSearchResults.visibility = View.GONE
+                        binding.progressBar.isVisible = false
+                        binding.tvEmpty.isVisible = false
+                        binding.layoutNoResults.isVisible = true
+                        binding.rvSearchResults.isVisible = false
                     }
                 }
             }
@@ -128,7 +127,7 @@ class SearchFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.isLoadingMore.collect { loading ->
-                binding.progressLoadMore.visibility = if (loading) View.VISIBLE else View.GONE
+                binding.progressLoadMore.isVisible = loading
             }
         }
     }

@@ -51,9 +51,12 @@ class MainActivity : AppCompatActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
+        // Refresh bottom nav labels with new locale
+        binding.bottomNavView.menu.clear()
+        binding.bottomNavView.inflateMenu(R.menu.bottom_nav_menu)
+        binding.bottomNavView.setupWithNavController(navController)
+
         // Re-navigate to the current destination with no animation.
-        // This forces the current fragment to re-inflate its views using the
-        // updated locale, so all @string/ references pick up the new language.
         val currentDest = navController.currentDestination?.id ?: return
         val noAnim = NavOptions.Builder()
             .setEnterAnim(0).setExitAnim(0)

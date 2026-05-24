@@ -20,12 +20,6 @@ class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
-    companion object {
-        private const val PREF_NAME   = "delta_games_profile"
-        private const val KEY_CAPTION = "caption"
-        private const val DEFAULT_CAPTION = "Hello World"
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
@@ -87,6 +81,8 @@ class ProfileFragment : Fragment() {
             setHintTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.colorTextHint))
             hint = getString(R.string.edit_caption_hint)
             setSelection(text.length)
+            background = null
+            setBackgroundResource(android.R.color.transparent)
         }
         val container = LinearLayout(requireContext()).apply {
             orientation = LinearLayout.VERTICAL
@@ -94,17 +90,18 @@ class ProfileFragment : Fragment() {
             setPadding(pad, pad / 2, pad, 0)
             addView(editText)
         }
-        AlertDialog.Builder(requireContext())
+        val dialog = AlertDialog.Builder(requireContext(), R.style.DeltaGames_Dialog)
             .setTitle(getString(R.string.edit_caption_title))
             .setView(container)
-            .setPositiveButton(getString(R.string.action_save)) { dialog, _ ->
-                val dialogEditText = (dialog as? AlertDialog)?.findViewById(R.id.edit_caption_edittext) ?: editText
+            .setPositiveButton(getString(R.string.action_save)) { d, _ ->
+                val dialogEditText = (d as? AlertDialog)?.findViewById(R.id.edit_caption_edittext) ?: editText
                 val newCaption = dialogEditText.text.trim().toString()
                 if (newCaption.isNotEmpty()) onSave(newCaption)
-                dialog.dismiss()
+                d.dismiss()
             }
-            .setNegativeButton(getString(R.string.action_cancel)) { dialog, _ -> dialog.dismiss() }
+            .setNegativeButton(getString(R.string.action_cancel)) { d, _ -> d.dismiss() }
             .show()
+        dialog.window?.setBackgroundDrawableResource(R.drawable.bg_card)
     }
 
     private fun applyChipVisuals(lang: String) {
@@ -135,5 +132,11 @@ class ProfileFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val PREF_NAME = "delta_games_profile"
+        private const val KEY_CAPTION = "caption"
+        private const val DEFAULT_CAPTION = "Hello World"
     }
 }
